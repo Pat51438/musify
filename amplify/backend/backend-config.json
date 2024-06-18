@@ -53,5 +53,23 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     }
+  },
+  "parameters": {
+    "AMPLIFY_function_musify7c0456e1_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "musify7c0456e1"
+        }
+      ]
+    },
+    "AMPLIFY_function_musify7c0456e1_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "musify7c0456e1"
+        }
+      ]
+    }
   }
 }
