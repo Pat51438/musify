@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { DataStore } from '@aws-amplify/datastore';
 import { Song, Album } from '../models';
-import {DataStore} from "@aws-amplify/datastore";
 
 const MusicPlayerContainer = styled.div`
     display: flex;
@@ -41,39 +41,43 @@ interface SongWithAlbum {
 }
 
 interface MusicPlayerProps {
-    songId: string;
+    songId: string | null;
     onPlay: () => void;
+    onPause: () => void;
     onNext: () => void;
     onPrev: () => void;
 }
 
-const MusicPlayer: React.FC<MusicPlayerProps> = ({ songId, onPlay, onNext, onPrev }) => {
+const MusicPlayer: React.FC<MusicPlayerProps> = ({ songId, onPlay, onPause, onNext, onPrev }) => {
     const [songWithAlbum, setSongWithAlbum] = useState<SongWithAlbum | null>(null);
 
     useEffect(() => {
         const fetchSongAndAlbum = async () => {
-            const song = await DataStore.query(Song, songId);
-            if (song) {
-                const album = await song.album;
-                setSongWithAlbum({ song, album });
+            if (songId) {
+                const song = await DataStore.query(Song, songId);
+                if (song) {
+                    const album = await song.album;
+                    setSongWithAlbum({ song, album });
+                }
+            } else {
+                setSongWithAlbum(null);
             }
         };
 
         fetchSongAndAlbum();
     }, [songId]);
 
-    if (!songWithAlbum) {
-        return <div>Loading...</div>;
-    }
-
-    const { song, album } = songWithAlbum;
-
     return (
         <MusicPlayerContainer>
-            <AlbumImage src={album?.image || ''} alt={album?.name || ''} />
+            {songWithAlbum ? (
+                <AlbumImage src={songWithAlbum.album?.image || ''} alt={songWithAlbum.album?.name || ''} />
+            ) : (
+                <AlbumImage src='' alt='No album' />
+            )}
             <Controls>
                 <ControlButton onClick={onPrev}>Previous</ControlButton>
                 <ControlButton onClick={onPlay}>Play</ControlButton>
+                <ControlButton onClick={onPause}>Pause</ControlButton>
                 <ControlButton onClick={onNext}>Next</ControlButton>
             </Controls>
             <ProgressBar type="range" min="0" max="100" value="0" />
