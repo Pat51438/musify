@@ -1,0 +1,23 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-musify-dev-a1c17-authRole",
+      "UnauthRoleArn": "arn:aws:iam::381492272245:role/amplify-musify-dev-a1c17-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::381492272245:role/amplify-musify-dev-a1c17-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-musify-dev-a1c17-deployment",
+      "UnauthRoleName": "amplify-musify-dev-a1c17-unauthRole",
+      "StackName": "amplify-musify-dev-a1c17",
+      "StackId": "arn:aws:cloudformation:us-east-1:381492272245:stack/amplify-musify-dev-a1c17/1191f590-2d95-11ef-97d9-0affe7bc5e9b",
+      "AmplifyAppId": "d1mb7irtco0jax"
+    },
+    "categories": {
+      "function": {
+        "musify7c0456e1": {}
+      },
+      "auth": {
+        "musifya856543f": {}
+      }
+    }
+  }
+}
