@@ -1,8 +1,7 @@
-// src/components/MusicPlayer.tsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import {Song, Title, Artist} from "../models";
-import {Album} from "../API";
+import { Song, Album } from '../models';
+import {DataStore} from "@aws-amplify/datastore";
 
 const MusicPlayerContainer = styled.div`
     display: flex;
@@ -38,21 +37,40 @@ const ProgressBar = styled.input`
 
 interface SongWithAlbum {
     song: Song;
-    album: Album | undefined
+    album: Album | undefined;
 }
 
-
 interface MusicPlayerProps {
-    song: Song;
+    songId: string;
     onPlay: () => void;
     onNext: () => void;
     onPrev: () => void;
 }
 
-const MusicPlayer: React.FC<MusicPlayerProps> = ({ song, onPlay, onNext, onPrev }) => {
+const MusicPlayer: React.FC<MusicPlayerProps> = ({ songId, onPlay, onNext, onPrev }) => {
+    const [songWithAlbum, setSongWithAlbum] = useState<SongWithAlbum | null>(null);
+
+    useEffect(() => {
+        const fetchSongAndAlbum = async () => {
+            const song = await DataStore.query(Song, songId);
+            if (song) {
+                const album = await song.album;
+                setSongWithAlbum({ song, album });
+            }
+        };
+
+        fetchSongAndAlbum();
+    }, [songId]);
+
+    if (!songWithAlbum) {
+        return <div>Loading...</div>;
+    }
+
+    const { song, album } = songWithAlbum;
+
     return (
         <MusicPlayerContainer>
-            <AlbumImage src={song.album?.image} alt={song.album?.name} />
+            <AlbumImage src={album?.image || ''} alt={album?.name || ''} />
             <Controls>
                 <ControlButton onClick={onPrev}>Previous</ControlButton>
                 <ControlButton onClick={onPlay}>Play</ControlButton>
