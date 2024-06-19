@@ -3,6 +3,7 @@ import MusicPlayer from './components/MusicPlayer';
 import PlaylistComponent from './components/Playlist';
 import { DataStore } from '@aws-amplify/datastore';
 import { Song } from './models';
+import {Authenticator} from '@aws-amplify/ui-react';
 
 const App: React.FC = () => {
   const [currentSongId, setCurrentSongId] = useState<string | null>(null);
@@ -37,7 +38,9 @@ const App: React.FC = () => {
   };
 
   return (
-      <div>
+      <Authenticator>
+      <div><h2>Playlist</h2>
+        <PlaylistComponent/>
         <h1>Music Player</h1>
         <MusicPlayer
             songId={currentSongId}
@@ -46,9 +49,9 @@ const App: React.FC = () => {
             onNext={handleNext}
             onPrev={handlePrev}
         />
-        <h2>Playlist</h2>
-        <PlaylistComponent />
+
       </div>
+      </Authenticator>
   );
 };
 
