@@ -46,6 +46,7 @@ interface MusicPlayerProps {
     onPause: () => void;
     onNext: () => void;
     onPrev: () => void;
+
 }
 
 const MusicPlayer: React.FC<MusicPlayerProps> = ({ songId, onPlay, onPause, onNext, onPrev }) => {
@@ -67,8 +68,11 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ songId, onPlay, onPause, onNe
         fetchSongAndAlbum();
     }, [songId]);
 
+
+
     return (
         <MusicPlayerContainer>
+
             {songWithAlbum ? (
                 <AlbumImage src={songWithAlbum.album?.image || ''} alt={songWithAlbum.album?.name || ''} />
             ) : (
@@ -81,6 +85,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ songId, onPlay, onPause, onNe
                 <ControlButton onClick={onNext}>Next</ControlButton>
             </Controls>
             <ProgressBar type="range" min="0" max="100" value="0" />
+
         </MusicPlayerContainer>
     );
 };
