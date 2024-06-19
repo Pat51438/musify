@@ -8,13 +8,12 @@ import { Authenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import config from './amplifyconfiguration.json';
 import { Amplify } from 'aws-amplify';
-import { searchSpotify } from './services/SpotifyService';
 
 Amplify.configure(config);
 
 const App: React.FC = () => {
   const [currentSongId, setCurrentSongId] = useState<string | null>(null);
-  const [spotifyResults, setSpotifyResults] = useState<any[]>([]);
+  const [selectedTrack, setSelectedTrack] = useState<any>(null);
 
   useEffect(() => {
     const fetchCurrentSong = async () => {
@@ -45,23 +44,17 @@ const App: React.FC = () => {
     console.log('Previous button clicked');
   };
 
-  const handleSearch = async (query: string) => {
-    console.log('Searching for:', query);
-    try {
-      const data = await searchSpotify(query);
-      setSpotifyResults(data.song.items); // Adjust according to the actual API response structure
-    } catch (error) {
-      console.error('Error fetching Spotify data:', error);
-    }
-  };
-
   const handleLogout = () => {
     console.log('Logout clicked');
   };
 
+  const handleSelectTrack = (track: any) => {
+    setSelectedTrack(track);
+  };
+
   return (
       <Authenticator>
-        <NavigationBar onSearch={handleSearch} onLogout={handleLogout} />
+        <NavigationBar onLogout={handleLogout} onSelectTrack={handleSelectTrack} />
         <div>
           <h2>Playlist</h2>
           <PlaylistComponent />
@@ -72,16 +65,8 @@ const App: React.FC = () => {
               onPause={handlePause}
               onNext={handleNext}
               onPrev={handlePrev}
+              selectedTrack={selectedTrack}
           />
-          <h2>Spotify Search Results</h2>
-          <div>
-            {spotifyResults.map((result, index) => (
-                <div key={index}>
-                  <p>{result.name}</p>
-                  <p>{result.artist[0].name}</p>
-                </div>
-            ))}
-          </div>
         </div>
       </Authenticator>
   );

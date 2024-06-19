@@ -1,45 +1,78 @@
-import axios, { AxiosError } from 'axios';
+import { useEffect, useState } from 'react';
 
-const API_KEY = 'c65d7ee17dmshd4c90f189c1f089p1c0203jsn6539eb57f602';
-const API_HOST = 'spotify23.p.rapidapi.com';
+const CLIENT_ID = '79120f863b8c445eb7a511666b8f22cc';
+const CLIENT_SECRET = 'd663dbc5ed0c461fb824717dd9e03f30';
 
-const spotifyApi = axios.create({
-    baseURL: `https://${API_HOST}/`,
-    headers: {
-        'x-rapidapi-key': API_KEY,
-        'x-rapidapi-host': API_HOST
-    }
-});
+const useSpotify = () => {
+    const [accessToken, setAccessToken] = useState('');
+    const [searchInput, setSearchInput] = useState('');
+    const [tracks, setTracks] = useState<any[]>([]);
 
-export const searchSpotify = async (query: string) => {
-    try {
-        const response = await spotifyApi.get('search/', {
-            params: {
-                type: 'multi',
-                offset: '0',
-                limit: '10',
-                numberOfTopResults: '5',
-                q: query
-            }
-        });
-        return response.data;
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            const axiosError = error as AxiosError;
-            if (axiosError.response) {
-                if (axiosError.response.status === 429) {
-                    console.error('Too many requests. Please try again later.');
-                } else if (axiosError.response.status === 403) {
-                    console.error('Access forbidden. Please check your API key.');
-                } else {
-                    console.error('Error searching Spotify:', axiosError.response.data);
-                }
-            } else {
-                console.error('Error searching Spotify:', axiosError.message);
-            }
-        } else {
-            console.error('An unexpected error occurred:', error);
+    useEffect(() => {
+        const authParameters = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `grant_type=client_credentials&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}`,
+        };
+
+        fetch('https://accounts.spotify.com/api/token', authParameters)
+            .then((result) => result.json())
+            .then((data) => {
+                setAccessToken(data.access_token);
+            })
+            .catch((error) => {
+                console.error('Error fetching access token:', error);
+            });
+    }, []);
+
+    const searchTracks = async (artistName: string) => {
+        if (!accessToken) {
+            console.error('No access token available');
+            return;
         }
-        throw error;
-    }
+
+        const searchParameters = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`,
+            },
+        };
+
+        try {
+            const artistID = await fetch(
+                `https://api.spotify.com/v1/search?q=${artistName}&type=artist`,
+                searchParameters
+            )
+                .then((response) => response.json())
+                .then((data) => data.artists.items[0]?.id);
+
+            if (!artistID) {
+                console.error('Artist not found');
+                return;
+            }
+
+            const tracks = await fetch(
+                `https://api.spotify.com/v1/artists/${artistID}/top-tracks?market=US`,
+                searchParameters
+            )
+                .then((response) => response.json())
+                .then((data) => data.tracks);
+
+            setTracks(tracks);
+        } catch (error) {
+            console.error('Error searching tracks:', error);
+        }
+    };
+
+    return {
+        searchInput,
+        setSearchInput,
+        tracks,
+        searchTracks,
+    };
 };
+
+export default useSpotify;

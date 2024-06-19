@@ -46,9 +46,10 @@ interface MusicPlayerProps {
     onPause: () => void;
     onNext: () => void;
     onPrev: () => void;
+    selectedTrack: any;
 }
 
-const MusicPlayer: React.FC<MusicPlayerProps> = ({ songId, onPlay, onPause, onNext, onPrev }) => {
+const MusicPlayer: React.FC<MusicPlayerProps> = ({ songId, onPlay, onPause, onNext, onPrev, selectedTrack }) => {
     const [songWithAlbum, setSongWithAlbum] = useState<SongWithAlbum | null>(null);
     const [progress, setProgress] = useState<number>(0);
 
@@ -74,18 +75,29 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ songId, onPlay, onPause, onNe
 
     return (
         <MusicPlayerContainer>
-            {songWithAlbum ? (
-                <AlbumImage src={songWithAlbum.album?.image || ''} alt={songWithAlbum.album?.name || ''} />
+            {selectedTrack ? (
+                <>
+                    <AlbumImage src={selectedTrack.album?.images[0]?.url || ''} alt={selectedTrack.album?.name || ''} />
+                    <h2>{selectedTrack.name}</h2>
+                    <h3>{selectedTrack.artists.map((artist: any) => artist.name).join(', ')}</h3>
+                    <audio controls src={selectedTrack.preview_url}>
+                        Your browser does not support the audio element.
+                    </audio>
+                </>
             ) : (
-                <AlbumImage src='' alt='No album' />
+                songWithAlbum && (
+                    <>
+                        <AlbumImage src={songWithAlbum.album?.image || ''} alt={songWithAlbum.album?.name || ''} />
+                        <Controls>
+                            <ControlButton onClick={onPrev}>Previous</ControlButton>
+                            <ControlButton onClick={onPlay}>Play</ControlButton>
+                            <ControlButton onClick={onPause}>Pause</ControlButton>
+                            <ControlButton onClick={onNext}>Next</ControlButton>
+                        </Controls>
+                        <ProgressBar type="range" min="0" max="100" value={progress} onChange={handleProgressChange} />
+                    </>
+                )
             )}
-            <Controls>
-                <ControlButton onClick={onPrev}>Previous</ControlButton>
-                <ControlButton onClick={onPlay}>Play</ControlButton>
-                <ControlButton onClick={onPause}>Pause</ControlButton>
-                <ControlButton onClick={onNext}>Next</ControlButton>
-            </Controls>
-            <ProgressBar type="range" min="0" max="100" value={progress} onChange={handleProgressChange} />
         </MusicPlayerContainer>
     );
 };
