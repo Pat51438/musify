@@ -10,20 +10,6 @@
       "StackName": "amplify-musify-dev-a1c17",
       "StackId": "arn:aws:cloudformation:us-east-1:381492272245:stack/amplify-musify-dev-a1c17/1191f590-2d95-11ef-97d9-0affe7bc5e9b",
       "AmplifyAppId": "d1mb7irtco0jax"
-    },
-    "categories": {
-      "function": {
-        "musify7c0456e1": {
-          "deploymentBucketName": "amplify-musify-dev-a1c17-deployment",
-          "s3Key": "amplify-builds/musify7c0456e1-307a7237503859576b6d-build.zip"
-        }
-      },
-      "auth": {
-        "musifya856543f": {}
-      },
-      "api": {
-        "musify": {}
-      }
     }
   }
 }
