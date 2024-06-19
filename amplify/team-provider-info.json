@@ -10,6 +10,11 @@
       "StackName": "amplify-musify-dev-a1c17",
       "StackId": "arn:aws:cloudformation:us-east-1:381492272245:stack/amplify-musify-dev-a1c17/1191f590-2d95-11ef-97d9-0affe7bc5e9b",
       "AmplifyAppId": "d1mb7irtco0jax"
+    },
+    "categories": {
+      "auth": {
+        "musifya856543f": {}
+      }
     }
   }
 }
