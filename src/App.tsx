@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import MusicPlayer from './components/MusicPlayer';
+import NavigationBar from './components/NavigationBar'
 import PlaylistComponent from './components/Playlist';
 import { DataStore } from '@aws-amplify/datastore';
 import { Song } from './models';
-import {Authenticator} from '@aws-amplify/ui-react';
+import {Authenticator , Button } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import config from './amplifyconfiguration.json';
 import {Amplify} from "aws-amplify";
@@ -39,21 +40,30 @@ const App: React.FC = () => {
   const handlePrev = () => {
     console.log('Previous button clicked');
   };
+  const handleSearch = (query: string) => {
+    console.log('Searching for:', query);
+
+  };
+
+  const handleLogout = () => {
+    console.log('Logout clicked');
+
+  };
 
   return (
       <Authenticator>
-      <div><h2>Playlist</h2>
-        <PlaylistComponent/>
-        <h1>Music Player</h1>
-        <MusicPlayer
-            songId={currentSongId}
-            onPlay={handlePlay}
-            onPause={handlePause}
-            onNext={handleNext}
-            onPrev={handlePrev}
-        />
-
-      </div>
+        <NavigationBar onSearch={handleSearch} onLogout={handleLogout} />
+        <div><h2>Playlist</h2>
+          <PlaylistComponent/>
+          <h1>Music Player</h1>
+          <MusicPlayer
+              songId={currentSongId}
+              onPlay={handlePlay}
+              onPause={handlePause}
+              onNext={handleNext}
+              onPrev={handlePrev}
+          />
+            </div>
       </Authenticator>
   );
 };
