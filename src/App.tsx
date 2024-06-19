@@ -4,7 +4,10 @@ import PlaylistComponent from './components/Playlist';
 import { DataStore } from '@aws-amplify/datastore';
 import { Song } from './models';
 import {Authenticator} from '@aws-amplify/ui-react';
-
+import '@aws-amplify/ui-react/styles.css';
+import config from './amplifyconfiguration.json';
+import {Amplify} from "aws-amplify";
+Amplify.configure(config);
 const App: React.FC = () => {
   const [currentSongId, setCurrentSongId] = useState<string | null>(null);
 
