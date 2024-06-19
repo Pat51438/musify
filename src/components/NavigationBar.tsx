@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const NavbarContainer = styled.div`
@@ -27,14 +27,29 @@ const LogoutButton = styled.button`
     cursor: pointer;
 `;
 
+const SearchButton = styled.button`
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+`;
+
 interface NavigationBarProps {
     onSearch: (query: string) => void;
     onLogout: () => void;
 }
 
 const NavigationBar: React.FC<NavigationBarProps> = ({ onSearch, onLogout }) => {
-    const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const query = event.target.value;
+    const [query, setQuery] = useState('');
+
+    const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setQuery(event.target.value);
+    };
+
+    const handleSearch = () => {
         onSearch(query);
     };
 
@@ -44,7 +59,13 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ onSearch, onLogout }) => 
                 <h1>Musify</h1>
             </div>
             <div>
-                <SearchInput type="text" placeholder="Search music..." onChange={handleSearch} />
+                <SearchInput
+                    type="text"
+                    placeholder="Search music..."
+                    value={query}
+                    onChange={handleSearchInputChange}
+                />
+                <SearchButton onClick={handleSearch}>Search</SearchButton>
                 <LogoutButton onClick={onLogout}>Logout</LogoutButton>
             </div>
         </NavbarContainer>

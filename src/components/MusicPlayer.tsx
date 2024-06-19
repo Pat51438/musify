@@ -46,11 +46,11 @@ interface MusicPlayerProps {
     onPause: () => void;
     onNext: () => void;
     onPrev: () => void;
-
 }
 
 const MusicPlayer: React.FC<MusicPlayerProps> = ({ songId, onPlay, onPause, onNext, onPrev }) => {
     const [songWithAlbum, setSongWithAlbum] = useState<SongWithAlbum | null>(null);
+    const [progress, setProgress] = useState<number>(0);
 
     useEffect(() => {
         const fetchSongAndAlbum = async () => {
@@ -68,11 +68,12 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ songId, onPlay, onPause, onNe
         fetchSongAndAlbum();
     }, [songId]);
 
-
+    const handleProgressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setProgress(parseInt(event.target.value, 10));
+    };
 
     return (
         <MusicPlayerContainer>
-
             {songWithAlbum ? (
                 <AlbumImage src={songWithAlbum.album?.image || ''} alt={songWithAlbum.album?.name || ''} />
             ) : (
@@ -84,8 +85,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ songId, onPlay, onPause, onNe
                 <ControlButton onClick={onPause}>Pause</ControlButton>
                 <ControlButton onClick={onNext}>Next</ControlButton>
             </Controls>
-            <ProgressBar type="range" min="0" max="100" value="0" />
-
+            <ProgressBar type="range" min="0" max="100" value={progress} onChange={handleProgressChange} />
         </MusicPlayerContainer>
     );
 };
