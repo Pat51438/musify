@@ -6,8 +6,8 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 const Container = styled.div`
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    justify-content: space-between;
+    align-items: flex-start;
     margin: 20px;
 `;
 
@@ -63,6 +63,18 @@ const AlbumImage = styled.img`
     }
 `;
 
+const TracksList = styled.div`
+    flex: 1;
+    margin-right: 20px;
+`;
+
+const NowPlaying = styled.div`
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
+
 const SpotifySearch: React.FC = () => {
     const { searchInput, setSearchInput, tracks, searchTracks } = useSpotify();
     const [currentTrack, setCurrentTrack] = useState<any>(null);
@@ -77,38 +89,42 @@ const SpotifySearch: React.FC = () => {
 
     return (
         <Container>
-            <SearchContainer>
-                <Title>Spotify Search</Title>
-                <SearchInput
-                    type="text"
-                    value={searchInput}
-                    onChange={(e) => setSearchInput(e.target.value)}
-                    placeholder="Search for an artist..."
-                />
-                <SearchButton onClick={handleSearch}>
-                    <FontAwesomeIcon icon={faSearch} />
-                </SearchButton>
-            </SearchContainer>
-            <div>
-                {tracks.map((track, index) => (
-                    <TrackContainer key={index} onClick={() => handleTrackClick(track)}>
-                        <AlbumImage src={track.album?.images[0]?.url || ''} alt={track.name} />
-                        <div>
-                            <p>{track.name}</p>
-                            <p>{track.artists.map((artist: any) => artist.name).join(', ')}</p>
-                        </div>
-                    </TrackContainer>
-                ))}
-            </div>
-            {currentTrack && (
+            <TracksList>
+                <SearchContainer>
+                    <Title>Spotify Search</Title>
+                    <SearchInput
+                        type="text"
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
+                        placeholder="Search for an artist..."
+                    />
+                    <SearchButton onClick={handleSearch}>
+                        <FontAwesomeIcon icon={faSearch} />
+                    </SearchButton>
+                </SearchContainer>
                 <div>
-                    <h3>Now Playing: {currentTrack.name}</h3>
-                    <p>{currentTrack.artists.map((artist: any) => artist.name).join(', ')}</p>
-                    <audio controls autoPlay>
-                        <source src={currentTrack.preview_url} type="audio/mpeg" />
-                    </audio>
+                    {tracks.map((track, index) => (
+                        <TrackContainer key={index} onClick={() => handleTrackClick(track)}>
+                            <AlbumImage src={track.album?.images[0]?.url || ''} alt={track.name} />
+                            <div>
+                                <p>{track.name}</p>
+                                <p>{track.artists.map((artist: any) => artist.name).join(', ')}</p>
+                            </div>
+                        </TrackContainer>
+                    ))}
                 </div>
-            )}
+            </TracksList>
+            <NowPlaying>
+                {currentTrack && (
+                    <div>
+                        <h3>Now Playing: {currentTrack.name}</h3>
+                        <p>{currentTrack.artists.map((artist: any) => artist.name).join(', ')}</p>
+                        <audio controls autoPlay>
+                            <source src={currentTrack.preview_url} type="audio/mpeg" />
+                        </audio>
+                    </div>
+                )}
+            </NowPlaying>
         </Container>
     );
 };
