@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import MusicPlayer from './components/MusicPlayer';
-import NavigationBar from './components/NavigationBar'
+import NavigationBar from './components/NavigationBar';
 import PlaylistComponent from './components/Playlist';
 import { DataStore } from '@aws-amplify/datastore';
 import { Song } from './models';
-import {Authenticator , Button } from '@aws-amplify/ui-react';
+import { Authenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import config from './amplifyconfiguration.json';
-import {Amplify} from "aws-amplify";
+import { Amplify } from 'aws-amplify';
+
 Amplify.configure(config);
+
 const App: React.FC = () => {
   const [currentSongId, setCurrentSongId] = useState<string | null>(null);
+  const [selectedTrack, setSelectedTrack] = useState<any>(null);
 
   useEffect(() => {
     const fetchCurrentSong = async () => {
@@ -40,21 +43,21 @@ const App: React.FC = () => {
   const handlePrev = () => {
     console.log('Previous button clicked');
   };
-  const handleSearch = (query: string) => {
-    console.log('Searching for:', query);
-
-  };
 
   const handleLogout = () => {
     console.log('Logout clicked');
+  };
 
+  const handleSelectTrack = (track: any) => {
+    setSelectedTrack(track);
   };
 
   return (
       <Authenticator>
-        <NavigationBar onSearch={handleSearch} onLogout={handleLogout} />
-        <div><h2>Playlist</h2>
-          <PlaylistComponent/>
+        <NavigationBar onLogout={handleLogout} onSelectTrack={handleSelectTrack} />
+        <div>
+          <h2>Playlist</h2>
+          <PlaylistComponent />
           <h1>Music Player</h1>
           <MusicPlayer
               songId={currentSongId}
@@ -62,8 +65,9 @@ const App: React.FC = () => {
               onPause={handlePause}
               onNext={handleNext}
               onPrev={handlePrev}
+              selectedTrack={selectedTrack}
           />
-            </div>
+        </div>
       </Authenticator>
   );
 };
