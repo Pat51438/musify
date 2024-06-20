@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import useSpotify from '../services/SpotifyService';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -24,7 +24,7 @@ const Title = styled.h2`
 `;
 
 const SearchInput = styled.input`
-    width: 300px; 
+    width: 300px;
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 4px 0 0 4px;
@@ -40,7 +40,7 @@ const SearchButton = styled.button`
     color: white;
     cursor: pointer;
     outline: none;
-    
+
     &:hover {
         background-color: dodgerblue;
     }
@@ -65,9 +65,14 @@ const AlbumImage = styled.img`
 
 const SpotifySearch: React.FC = () => {
     const { searchInput, setSearchInput, tracks, searchTracks } = useSpotify();
+    const [currentTrack, setCurrentTrack] = useState<any>(null);
 
     const handleSearch = () => {
         searchTracks(searchInput);
+    };
+
+    const handleTrackClick = (track: any) => {
+        setCurrentTrack(track);
     };
 
     return (
@@ -86,21 +91,26 @@ const SpotifySearch: React.FC = () => {
             </SearchContainer>
             <div>
                 {tracks.map((track, index) => (
-                    <TrackContainer key={index}>
+                    <TrackContainer key={index} onClick={() => handleTrackClick(track)}>
                         <AlbumImage src={track.album?.images[0]?.url || ''} alt={track.name} />
                         <div>
                             <p>{track.name}</p>
                             <p>{track.artists.map((artist: any) => artist.name).join(', ')}</p>
-                            <audio controls>
-                                <source src={track.preview_url} type="audio/mpeg" />
-                            </audio>
                         </div>
                     </TrackContainer>
                 ))}
             </div>
+            {currentTrack && (
+                <div>
+                    <h3>Now Playing: {currentTrack.name}</h3>
+                    <p>{currentTrack.artists.map((artist: any) => artist.name).join(', ')}</p>
+                    <audio controls autoPlay>
+                        <source src={currentTrack.preview_url} type="audio/mpeg" />
+                    </audio>
+                </div>
+            )}
         </Container>
     );
 };
 
 export default SpotifySearch;
-
