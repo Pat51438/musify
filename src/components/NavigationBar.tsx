@@ -1,125 +1,54 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import useSpotify from '../services/SpotifyService';
-
-const NavbarContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    padding: 10px 20px;
-    background-color: #333;
-    color: white;
-`;
-
-const NavbarTop = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-`;
-
-const SearchInput = styled.input`
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-right: 10px;
-    width: 300px;
-`;
-
-const LogoutButton = styled.button`
-    padding: 8px 16px;
-    background-color: #f44336;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-`;
-
-const SearchButton = styled.button`
-    padding: 8px 16px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-left: 10px;
-`;
-
-const SearchResults = styled.div`
-    margin-top: 10px;
-    background-color: #444;
-    padding: 10px;
-    border-radius: 4px;
-    max-height: 300px;
-    overflow-y: auto;
-`;
-
-const ResultItem = styled.div`
-    padding: 10px;
-    border-bottom: 1px solid #555;
-    cursor: pointer;
-`;
-
-const ResultItemName = styled.p`
-    margin: 0;
-    font-size: 16px;
-    font-weight: bold;
-`;
-
-const ResultItemArtist = styled.p`
-    margin: 0;
-    font-size: 14px;
-    color: #ccc;
-`;
 
 interface NavigationBarProps {
     onLogout: () => void;
-    onSelectTrack: (track: any) => void;
 }
+const Nav = styled.nav`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #282c34;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+`;
 
-const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout, onSelectTrack }) => {
-    const { searchInput, setSearchInput, tracks, searchTracks } = useSpotify();
+const LogoutButton = styled.button`
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    color: white;
+    background-color: #61dafb;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 
-    const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchInput(event.target.value);
-    };
+    &:hover {
+        background-color: #21a1f1;
+    }
+`;
 
-    const handleSearch = () => {
-        searchTracks(searchInput);
-    };
 
+const Title = styled.h1`
+    font-size: 1.5rem;
+    margin: 0;
+`;
+
+
+
+const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout }) => {
     return (
-        <NavbarContainer>
-            <NavbarTop>
-                <div>
-                    <h1>Musify</h1>
-                </div>
-                <div>
-                    <SearchInput
-                        type="text"
-                        placeholder="Search music..."
-                        value={searchInput}
-                        onChange={handleSearchInputChange}
-                    />
-                    <SearchButton onClick={handleSearch}>Search</SearchButton>
-                    <LogoutButton onClick={onLogout}>Logout</LogoutButton>
-                </div>
-            </NavbarTop>
-            {tracks.length > 0 && (
-                <SearchResults>
-                    {tracks.map((track, index) => (
-                        <ResultItem key={index} onClick={() => onSelectTrack(track)}>
-                            <ResultItemName>{track.name}</ResultItemName>
-                            <ResultItemArtist>{track.artists.map((artist: any) => artist.name).join(', ')}</ResultItemArtist>
-                            {track.preview_url && (
-                                <audio controls>
-                                    <source src={track.preview_url} type="audio/mpeg" />
-                                </audio>
-                            )}
-                        </ResultItem>
-                    ))}
-                </SearchResults>
-            )}
-        </NavbarContainer>
+        <Nav>
+            <Title>Musify</Title>
+            <div>
+
+                <LogoutButton onClick={onLogout}>Logout</LogoutButton>
+            </div>
+        </Nav>
     );
 };
 
 export default NavigationBar;
+
+

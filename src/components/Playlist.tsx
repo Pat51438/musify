@@ -1,26 +1,49 @@
 // src/components/Playlist.tsx
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import {DataStore} from "@aws-amplify/datastore";
-import {Song, Title, Artist} from "../models";
+import { DataStore } from '@aws-amplify/datastore';
+import { Song, Title, Artist } from '../models';
 
-interface SongWithArtistAndTitle  {
+interface SongWithArtistAndTitle {
     song: Song;
     artist: Artist | undefined;
     title: Title | undefined;
 }
 
 const PlaylistContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: #f8f9fa; /* Light gray background */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow */
 `;
 
 const SongItem = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #dee2e6;
+    transition: background-color 0.3s ease;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    &:hover {
+        background-color: #f0f0f0;
+    }
+`;
+
+
+const SongTitle = styled.span`
+    font-size: 18px;
+    font-weight: 600;
+`;
+
+const ArtistName = styled.span`
+    color: #6c757d; /* Gray color for artist name */
 `;
 
 const PlaylistComponent: React.FC = () => {
@@ -30,7 +53,7 @@ const PlaylistComponent: React.FC = () => {
         const fetchSongs = async () => {
             const playlistSongs = await DataStore.query(Song);
             // Resolve the AsyncItem fields
-            const songsWithArtistAndTitle: SongWithArtistAndTitle[]= await Promise.all(
+            const songsWithArtistAndTitle: SongWithArtistAndTitle[] = await Promise.all(
                 playlistSongs.map(async (song) => {
                     const artist = await song.artist;
                     const title = await song.title;
@@ -47,10 +70,8 @@ const PlaylistComponent: React.FC = () => {
         <PlaylistContainer>
             {songs.map((song) => (
                 <SongItem key={song.song.id}>
-
-                    <span>{song.title?.name}</span>
-                    <span>{song.artist?.artistName}</span>
-
+                    <SongTitle>{song.title?.name}</SongTitle>
+                    <ArtistName>{song.artist?.artistName}</ArtistName>
                 </SongItem>
             ))}
         </PlaylistContainer>
@@ -58,3 +79,4 @@ const PlaylistComponent: React.FC = () => {
 };
 
 export default PlaylistComponent;
+
