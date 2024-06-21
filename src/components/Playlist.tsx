@@ -28,7 +28,7 @@ const DeleteButton = styled.button`
   padding: 5px 10px;
   background-color: #21a1f1;
   color: white;
-  border: 2px solid #c0392b;
+  border: none;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease;

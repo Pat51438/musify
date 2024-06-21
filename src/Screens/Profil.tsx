@@ -93,23 +93,23 @@ const Profile = () => {
 
     return (
         <div>
-            <h2>{userProfileData ? 'Modifier le profil' : 'Créer un nouveau profil'}</h2>
+            <h2>{userProfileData ? 'Edit your profile' : 'Create a new profile'}</h2>
             <form onSubmit={handleSubmit}>
                 <label>
-                    Nom:
+                    Name:
                     <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
                 </label>
                 <label>
-                    Nom d'utilisateur:
+                    Username:
                     <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
                 </label>
                 <label>
-                    URL de la photo:
+                    Photo URL:
                     <input type="text" value={photo} onChange={(e) => setPhoto(e.target.value)} />
                 </label>
-                <button type="submit">{userProfileData ? 'Enregistrer les modifications' : 'Créer le profil'}</button>
+                <button type="submit">{userProfileData ? 'Enregistrer les modifications' : 'Create profile'}</button>
             </form>
-            {userProfileData && <button onClick={handleDelete}>Supprimer le profil</button>}
+            {userProfileData && <button onClick={handleDelete}>Delete Profile</button>}
 
         </div>
     );
