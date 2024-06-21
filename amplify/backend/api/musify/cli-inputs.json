@@ -4,10 +4,10 @@
     "apiName": "musify",
     "serviceName": "AppSync",
     "defaultAuthType": {
-      "mode": "API_KEY",
-      "expirationTime": 365,
-      "apiKeyExpirationDate": "2025-06-18T17:07:55.603Z",
-      "keyDescription": ""
-    }
+      "mode": "AMAZON_COGNITO_USER_POOLS",
+      "cognitoUserPoolId": "authmusifya856543f"
+    },
+    "additionalAuthTypes": [],
+    "conflictResolution": {}
   }
 }

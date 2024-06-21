@@ -4,7 +4,14 @@
       "dependsOn": [],
       "output": {
         "authConfig": {
-          "additionalAuthenticationProviders": [],
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+              "userPoolConfig": {
+                "userPoolId": "authmusifya856543f"
+              }
+            }
+          ],
           "defaultAuthentication": {
             "apiKeyConfig": {
               "apiKeyExpirationDate": "2025-06-18T17:07:55.603Z",
@@ -47,29 +54,5 @@
       "service": "Cognito"
     }
   },
-  "function": {
-    "musify7c0456e1": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    }
-  },
-  "parameters": {
-    "AMPLIFY_function_musify7c0456e1_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "musify7c0456e1"
-        }
-      ]
-    },
-    "AMPLIFY_function_musify7c0456e1_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "musify7c0456e1"
-        }
-      ]
-    }
-  }
+  "function": {}
 }

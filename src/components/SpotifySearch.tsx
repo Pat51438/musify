@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import useSpotify from '../services/SpotifyService';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -82,12 +82,6 @@ const TracksList = styled.div`
     margin-right: 20px;
 `;
 
-const NowPlaying = styled.div`
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-`;
 
 const TrackInfo = styled.div`
   flex-grow: 1;
@@ -99,10 +93,42 @@ const ContentContainer = styled.div`
   justify-content: space-between;
 `;
 
+const NowPlaying = styled.div`
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+`;
+
+const NowPlayingContent = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+`;
+
+const NowPlayingImage = styled.img`
+  width: 100px;
+  height: 100px;
+  margin-right: 15px;
+  border-radius: 4px;
+`;
+
+const NowPlayingInfo = styled.div`
+  flex-grow: 1;
+`;
+
 const SpotifySearch: React.FC = () => {
     const { searchInput, setSearchInput, tracks, searchTracks } = useSpotify();
     const [currentTrack, setCurrentTrack] = useState<any>(null);
-    const [playlist, setPlaylist] = useState<any[]>([]);
+    const [playlist, setPlaylist] = useState<any[]>(() => {
+        // Initialiser la playlist à partir du localStorage
+        const savedPlaylist = localStorage.getItem('playlist');
+        return savedPlaylist ? JSON.parse(savedPlaylist) : [];
+    });
+
+    useEffect(() => {
+        localStorage.setItem('playlist', JSON.stringify(playlist));
+    }, [playlist]);
 
     const handleSearch = () => {
         searchTracks(searchInput);
@@ -111,9 +137,18 @@ const SpotifySearch: React.FC = () => {
     const handleTrackClick = (track: any) => {
         setCurrentTrack(track);
     };
+    const handleDeleteTrack = (trackId: string) => {
+        setPlaylist(prevPlaylist => prevPlaylist.filter(track => track.id !== trackId));
+    };
 
     const addToPlaylist = (track: any) => {
-        setPlaylist(prevPlaylist => [...prevPlaylist, track]);
+        setPlaylist(prevPlaylist => {
+            // Vérifier si la chanson existe déjà dans la playlist
+            if (!prevPlaylist.some(t => t.id === track.id)) {
+                return [...prevPlaylist, track];
+            }
+            return prevPlaylist;
+        });
     };
 
     const handleTrackContainerClick = (track: any, event: React.MouseEvent) => {
@@ -161,9 +196,14 @@ const SpotifySearch: React.FC = () => {
                 <NowPlaying>
                     {currentTrack ? (
                         <>
-                            <h3>Now Playing: </h3>
-                            <p>{currentTrack.name}</p>
-                            <p>{currentTrack.artists.map((artist: any) => artist.name).join(', ')}</p>
+                            <NowPlayingContent>
+                                <NowPlayingImage src={currentTrack.album?.images[0]?.url || ''} alt={currentTrack.name} />
+                                <NowPlayingInfo>
+                                    <h3>Now Playing: </h3>
+                                    <p>{currentTrack.name}</p>
+                                    <p>{currentTrack.artists.map((artist: any) => artist.name).join(', ')}</p>
+                                </NowPlayingInfo>
+                            </NowPlayingContent>
                             <audio controls autoPlay style={{width: '100%'}}>
                                 <source src={currentTrack.preview_url} type="audio/mpeg" />
                             </audio>
@@ -177,6 +217,7 @@ const SpotifySearch: React.FC = () => {
                 <PlaylistComponent
                     playlist={playlist}
                     onTrackClick={handleTrackClick}
+                    onDeleteTrack={handleDeleteTrack}
                 />
             </Column>
         </Container>
