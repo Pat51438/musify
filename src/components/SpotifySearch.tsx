@@ -46,10 +46,13 @@ const SearchInput = styled.input`
 
 const SearchButton = styled.button`
     padding: 10px;
-    background-color: #1db954;
+    background-color: #21a1f1;
     color: white;
     border: none;
     cursor: pointer;
+    &:hover {
+        background-color:#61dafb ;
+    }
 `;
 
 const TrackContainer = styled.div`

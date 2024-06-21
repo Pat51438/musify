@@ -26,9 +26,9 @@ const SongInfo = styled.div`
 
 const DeleteButton = styled.button`
   padding: 5px 10px;
-  background-color: #e74c3c;
+  background-color: #21a1f1;
   color: white;
-  border: none;
+  border: 2px solid #c0392b;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease;

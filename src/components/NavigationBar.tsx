@@ -19,14 +19,14 @@ const LogoutButton = styled.button`
     padding: 0.5rem 1rem;
     font-size: 1rem;
     color: white;
-    background-color: #61dafb;
+    background-color:#21a1f1 ;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
 
     &:hover {
-        background-color: #21a1f1;
+        background-color:#61dafb ;
     }
 `;
 
