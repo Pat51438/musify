@@ -50,5 +50,3 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout }) => {
 };
 
 export default NavigationBar;
-
-

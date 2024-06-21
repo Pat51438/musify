@@ -1,77 +1,62 @@
-// src/components/Playlist.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { DataStore } from '@aws-amplify/datastore';
-import { Song, Title, Artist } from '../models';
-
-interface SongWithArtistAndTitle {
-    song: Song;
-    artist: Artist | undefined;
-    title: Title | undefined;
-}
 
 const PlaylistContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    background-color: #f8f9fa; /* Light gray background */
-    border-radius: 8px; /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow */
+    height: 100%;
+    overflow-y: auto;
 `;
 
 const SongItem = styled.div`
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 15px;
-    border-bottom: 1px solid #dee2e6;
-    transition: background-color 0.3s ease;
-
-    &:last-child {
-        border-bottom: none;
-    }
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
 
     &:hover {
         background-color: #f0f0f0;
     }
 `;
 
-
-const SongTitle = styled.span`
-    font-size: 18px;
-    font-weight: 600;
+const SongInfo = styled.div`
+  flex-grow: 1;
 `;
 
-const ArtistName = styled.span`
-    color: #6c757d; /* Gray color for artist name */
+const PlayButton = styled.button`
+  padding: 5px 10px;
+  background-color: #1db954;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #1ed760;
+  }
 `;
 
-const PlaylistComponent: React.FC = () => {
-    const [songs, setSongs] = useState<SongWithArtistAndTitle[]>([]);
+const AlbumImage = styled.img`
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+`;
 
-    useEffect(() => {
-        const fetchSongs = async () => {
-            const playlistSongs = await DataStore.query(Song);
-            // Resolve the AsyncItem fields
-            const songsWithArtistAndTitle: SongWithArtistAndTitle[] = await Promise.all(
-                playlistSongs.map(async (song) => {
-                    const artist = await song.artist;
-                    const title = await song.title;
-                    return { song, artist, title };
-                })
-            );
-            setSongs(songsWithArtistAndTitle);
-        };
+interface PlaylistProps {
+    playlist: any[];
+    onTrackClick: (track: any) => void;
+}
 
-        fetchSongs();
-    }, []);
-
+const PlaylistComponent: React.FC<PlaylistProps> = ({ playlist, onTrackClick }) => {
     return (
         <PlaylistContainer>
-            {songs.map((song) => (
-                <SongItem key={song.song.id}>
-                    <SongTitle>{song.title?.name}</SongTitle>
-                    <ArtistName>{song.artist?.artistName}</ArtistName>
+            <h2>Your Playlist</h2>
+            {playlist.map((track, index) => (
+                <SongItem key={index} onClick={() => onTrackClick(track)}>
+                    <AlbumImage src={track.album?.images[0]?.url || ''} alt={track.name} />
+                    <SongInfo>
+                        <p>{track.name}</p>
+                        <p>{track.artists.map((artist: any) => artist.name).join(', ')}</p>
+                    </SongInfo>
                 </SongItem>
             ))}
         </PlaylistContainer>
@@ -79,4 +64,3 @@ const PlaylistComponent: React.FC = () => {
 };
 
 export default PlaylistComponent;
-

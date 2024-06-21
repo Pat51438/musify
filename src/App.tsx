@@ -24,7 +24,6 @@ const App: React.FC = () => {
             <div>
               <NavigationBar onLogout={onLogout} />
               <SpotifySearch />
-
             </div>
         )}
       </Authenticator>
