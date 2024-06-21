@@ -9,18 +9,14 @@ Amplify.configure(config);
 
 const App: React.FC = () => {
 
-  const onLogout = async () => {
-    console.log('Previous button clicked');
-  };
-
   return (
       <Authenticator>
-        {
-           <div>
-              <NavigationBar onLogout={onLogout} />
+        {({ signOut, user }) => (
+            <div>
+              <NavigationBar onLogout={signOut} username={user?.username} />
               <SpotifySearch />
             </div>
-        }
+        )}
       </Authenticator>
   );
 };

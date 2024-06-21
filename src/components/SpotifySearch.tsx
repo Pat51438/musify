@@ -38,10 +38,6 @@ const SearchContainer = styled.div`
     margin-bottom: 20px;
 `;
 
-const Title = styled.h2`
-    margin-right: 10px;
-`;
-
 const SearchInput = styled.input`
     width: 100%;
     padding: 10px;
@@ -77,20 +73,9 @@ const AlbumImage = styled.img`
     border-radius: 4px;
 `;
 
-const TracksList = styled.div`
-    flex: 1;
-    margin-right: 20px;
-`;
-
-
 const TrackInfo = styled.div`
   flex-grow: 1;
   margin-left: 10px;
-`;
-
-const ContentContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
 `;
 
 const NowPlaying = styled.div`
@@ -121,6 +106,7 @@ const SpotifySearch: React.FC = () => {
     const { searchInput, setSearchInput, tracks, searchTracks } = useSpotify();
     const [currentTrack, setCurrentTrack] = useState<any>(null);
     const [playlist, setPlaylist] = useState<any[]>(() => {
+
         // Initialiser la playlist à partir du localStorage
         const savedPlaylist = localStorage.getItem('playlist');
         return savedPlaylist ? JSON.parse(savedPlaylist) : [];
@@ -143,6 +129,7 @@ const SpotifySearch: React.FC = () => {
 
     const addToPlaylist = (track: any) => {
         setPlaylist(prevPlaylist => {
+
             // Vérifier si la chanson existe déjà dans la playlist
             if (!prevPlaylist.some(t => t.id === track.id)) {
                 return [...prevPlaylist, track];
@@ -152,12 +139,12 @@ const SpotifySearch: React.FC = () => {
     };
 
     const handleTrackContainerClick = (track: any, event: React.MouseEvent) => {
+
         // Vérifie si le clic n'était pas sur le bouton "Add to Playlist"
         if (!(event.target as Element).closest('button')) {
             handleTrackClick(track);
         }
     };
-
 
     return (
         <Container>
@@ -223,9 +210,4 @@ const SpotifySearch: React.FC = () => {
         </Container>
     );
 };
-
-
-
-
-
 export default SpotifySearch;

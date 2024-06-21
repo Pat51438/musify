@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 interface NavigationBarProps {
-    onLogout: () => void;
+    onLogout?: () => void;
+    username?: string;
 }
 const Nav = styled.nav`
     display: flex;
@@ -29,20 +30,16 @@ const LogoutButton = styled.button`
     }
 `;
 
-
 const Title = styled.h1`
     font-size: 1.5rem;
     margin: 0;
 `;
 
-
-
-const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout }) => {
+const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout, username }) => {
     return (
         <Nav>
             <Title>Musify</Title>
             <div>
-
                 <LogoutButton onClick={onLogout}>Logout</LogoutButton>
             </div>
         </Nav>

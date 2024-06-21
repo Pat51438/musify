@@ -24,19 +24,6 @@ const SongInfo = styled.div`
   flex-grow: 1;
 `;
 
-const PlayButton = styled.button`
-  padding: 5px 10px;
-  background-color: #1db954;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #1ed760;
-  }
-`;
-
 const DeleteButton = styled.button`
   padding: 5px 10px;
   background-color: #e74c3c;
