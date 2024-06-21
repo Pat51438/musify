@@ -4,13 +4,9 @@ import { schema } from './schema';
 
 
 
-const { Title, Artist, Album, Song, User, Playlist } = initSchema(schema);
+const { User, UserProfile } = initSchema(schema);
 
 export {
-  Title,
-  Artist,
-  Album,
-  Song,
   User,
-  Playlist
+  UserProfile
 };

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 interface NavigationBarProps {
     onLogout?: () => void;
     username?: string;
+    onCreateProfile: () => void;
 }
 const Nav = styled.nav`
     display: flex;
@@ -14,8 +15,11 @@ const Nav = styled.nav`
     color: white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
-
-const LogoutButton = styled.button`
+const ButtonGroup = styled.div`
+    display: flex;
+    gap: 1rem;
+`;
+const Button = styled.button`
     padding: 0.5rem 1rem;
     font-size: 1rem;
     color: white;
@@ -35,15 +39,15 @@ const Title = styled.h1`
     margin: 0;
 `;
 
-const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout, username }) => {
+const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout, username, onCreateProfile}) => {
     return (
         <Nav>
             <Title>Musify</Title>
-            <div>
-                <LogoutButton onClick={onLogout}>Logout</LogoutButton>
-            </div>
+            <ButtonGroup>
+                <Button onClick={onCreateProfile}>Créer Profil</Button>
+                <Button onClick={onLogout}>Logout</Button>
+            </ButtonGroup>
         </Nav>
     );
-};
-
+}
 export default NavigationBar;
