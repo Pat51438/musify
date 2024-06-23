@@ -54,5 +54,36 @@
       "service": "Cognito"
     }
   },
-  "function": {}
+  "function": {
+    "musify1d5ecf29": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_musify1d5ecf29_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "musify1d5ecf29"
+        }
+      ]
+    },
+    "AMPLIFY_function_musify1d5ecf29_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "musify1d5ecf29"
+        }
+      ]
+    }
+  },
+  "storage": {
+    "musifynabilapatrick": {
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "S3"
+    }
+  }
 }

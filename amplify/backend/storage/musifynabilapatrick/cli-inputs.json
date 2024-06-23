@@ -1,0 +1,14 @@
+{
+  "resourceName": "musifynabilapatrick",
+  "policyUUID": "9c5deefe",
+  "bucketName": "musify97fcf2d12dda46918d2e50c9de37ecc0",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}

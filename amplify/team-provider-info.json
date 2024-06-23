@@ -17,6 +17,15 @@
       },
       "api": {
         "musify": {}
+      },
+      "storage": {
+        "musifynabilapatrick": {}
+      },
+      "function": {
+        "musify1d5ecf29": {
+          "deploymentBucketName": "amplify-musify-dev-a1c17-deployment",
+          "s3Key": "amplify-builds/musify1d5ecf29-30694e6755776d765356-build.zip"
+        }
       }
     }
   }

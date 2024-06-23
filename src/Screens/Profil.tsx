@@ -1,68 +1,91 @@
 import React, { useState, useEffect } from 'react';
-import { DataStore } from '@aws-amplify/datastore';
+import { DataStore, Storage } from 'aws-amplify';
 import { User, UserProfile } from '../models';
 import { getCurrentUser } from "aws-amplify/auth";
-
+import { useForm } from '../hooks/useForm';
+import { useUserProfile } from '../hooks/useUserProfile';
+import FormInput from '../components/FormInput';
 
 const Profile = () => {
-    const [userProfileData, setUserProfileData] = useState<UserProfile | null>(null);
-    const [userData, setUserData] = useState<User | null>(null);
-    const [name, setName] = useState('');
-    const [username, setUsername] = useState('');
-    const [photo, setPhoto] = useState('');
+    const { userProfile, user, loading, error, fetchUserProfile } = useUserProfile();
     const [userId, setUserId] = useState<string | null>(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const [photoFile, setPhotoFile] = useState<File | null>(null);
+
+    const initialState = {
+        name: '',
+        username: '',
+        photo: '',
+    };
+
+    const { values, handleChange, resetForm } = useForm(initialState);
 
     useEffect(() => {
         getCurrentUser().then(user => {
             const { username } = user;
             setUserId(username);
             fetchUserProfile(username);
-        })
-    }, []);
+        });
+    }, [fetchUserProfile]);
 
-    const fetchUserProfile = async (userId: string) => {
-        try {
-            const userProfileData = await DataStore.query(UserProfile, up => up.userProfileId.eq(userId));
-            if (userProfileData.length > 0) {
-                setUserProfileData(userProfileData[0]);
-                const userData = await DataStore.query(User, userProfileData[0].userProfileId);
-                if (userData) {
-                    setUserData(userData);
-                    setName(userData.name || '');
-                    setUsername(userData.username || '');
-                    setPhoto(userData.photo || '');
-                }
-            }
-        } catch (error) {
-            console.error("Erreur lors de la récupération du profil :", error);
+    useEffect(() => {
+        if (user) {
+            resetForm({
+                name: user.name || '',
+                username: user.username || '',
+                photo: user.photo || '',
+            });
         }
+    }, [user, resetForm]);
+
+    const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            setPhotoFile(file);
+        }
+    };
+
+    const uploadPhoto = async () => {
+        if (photoFile && userId) {
+            try {
+                const result = await Storage.put(`${userId}_profile.jpg`, photoFile, {
+                    contentType: 'image/jpeg',
+                });
+                return result.key;
+            } catch (error) {
+                console.error('Erreur lors du téléchargement de la photo:', error);
+                throw error;
+            }
+        }
+        return null;
     };
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
         try {
-            if (userData) {
-                // Mettre à jour le profil utilisateur
+            let photoKey = values.photo;
+            if (photoFile) {
+                photoKey = await uploadPhoto() || '';
+            }
+
+            if (user) {
                 await DataStore.save(
-                    User.copyOf(userData, updated => {
-                        updated.name = name;
-                        updated.username = username;
-                        updated.photo = photo;
+                    User.copyOf(user, updated => {
+                        updated.name = values.name;
+                        updated.username = values.username;
+                        updated.photo = photoKey;
                     })
                 );
             } else if (userId) {
-                // Créer un nouvel utilisateur
                 const newUser = await DataStore.save(
                     new User({
                         userID: userId,
-                        username,
-                        name,
-                        photo,
+                        ...values,
+                        photo: photoKey,
                     })
                 );
 
-                // Créer un nouveau UserProfile
                 await DataStore.save(
                     new UserProfile({
                         userProfileId: newUser.id,
@@ -72,6 +95,8 @@ const Profile = () => {
             }
 
             alert('Profil sauvegardé avec succès !');
+            setIsEditing(false);
+            fetchUserProfile(userId!);
         } catch (error) {
             console.error('Erreur lors de la sauvegarde du profil :', error);
             alert('Une erreur est survenue lors de la sauvegarde du profil.');
@@ -79,11 +104,16 @@ const Profile = () => {
     };
 
     const handleDelete = async () => {
-        if (userProfileData && userData) {
+        if (userProfile && user) {
             try {
-                await DataStore.delete(userProfileData);
-                await DataStore.delete(userData);
+                await DataStore.delete(userProfile);
+                await DataStore.delete(user);
+                if (user.photo) {
+                    await Storage.remove(user.photo);
+                }
                 alert('Profil supprimé avec succès !');
+                resetForm(initialState);
+                setIsEditing(false);
             } catch (error) {
                 console.error('Erreur lors de la suppression du profil :', error);
                 alert('Une erreur est survenue lors de la suppression du profil.');
@@ -91,26 +121,50 @@ const Profile = () => {
         }
     };
 
+    if (loading) return <div>Chargement...</div>;
+    if (error) return <div>Erreur : {error.message}</div>;
+
     return (
         <div>
-            <h2>{userProfileData ? 'Edit your profile' : 'Create a new profile'}</h2>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Name:
-                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
-                </label>
-                <label>
-                    Username:
-                    <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
-                </label>
-                <label>
-                    Photo URL:
-                    <input type="text" value={photo} onChange={(e) => setPhoto(e.target.value)} />
-                </label>
-                <button type="submit">{userProfileData ? 'Enregistrer les modifications' : 'Create profile'}</button>
-            </form>
-            {userProfileData && <button onClick={handleDelete}>Delete Profile</button>}
-
+            <h2>{user ? 'Votre profil' : 'Créer un nouveau profil'}</h2>
+            {!isEditing && user ? (
+                <div>
+                    <p>Nom: {user.name}</p>
+                    <p>Nom d'utilisateur: {user.username}</p>
+                    {user.photo && <img src={user.photo} alt="Profile" style={{width: '200px', height: '200px'}} />}
+                    <button onClick={() => setIsEditing(true)}>Modifier</button>
+                    <button onClick={handleDelete}>Supprimer le profil</button>
+                </div>
+            ) : (
+                <form onSubmit={handleSubmit}>
+                    <FormInput
+                        label="Nom"
+                        name="name"
+                        value={values.name}
+                        onChange={handleChange}
+                    />
+                    <FormInput
+                        label="Nom d'utilisateur"
+                        name="username"
+                        value={values.username}
+                        onChange={handleChange}
+                    />
+                    <div>
+                        <label htmlFor="photo">Photo de profil:</label>
+                        <input
+                            type="file"
+                            id="photo"
+                            name="photo"
+                            onChange={handlePhotoChange}
+                            accept="image/*"
+                        />
+                    </div>
+                    <button type="submit">
+                        {user ? 'Enregistrer les modifications' : 'Créer le profil'}
+                    </button>
+                    {isEditing && <button type="button" onClick={() => setIsEditing(false)}>Annuler</button>}
+                </form>
+            )}
         </div>
     );
 };

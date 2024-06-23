@@ -57,7 +57,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout, username, onCre
         if (onCreateProfile) {
             onCreateProfile();
         }
-        navigate('/profile'); // Navigate to the profile page
+        navigate('/profile');
     };
 
     return (
