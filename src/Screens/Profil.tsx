@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { DataStore, Storage } from 'aws-amplify';
+import { DataStore } from '@aws-amplify/datastore';
+import { uploadData, remove, getUrl } from '@aws-amplify/storage';
 import { User, UserProfile } from '../models';
 import { getCurrentUser } from "aws-amplify/auth";
 import { useForm } from '../hooks/useForm';
@@ -11,6 +12,7 @@ const Profile = () => {
     const [userId, setUserId] = useState<string | null>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [photoFile, setPhotoFile] = useState<File | null>(null);
+    const [photoUrl, setPhotoUrl] = useState<string | null>(null);
 
     const initialState = {
         name: '',
@@ -35,9 +37,20 @@ const Profile = () => {
                 username: user.username || '',
                 photo: user.photo || '',
             });
+            if (user.photo) {
+                getPhotoUrl(user.photo);
+            }
         }
     }, [user, resetForm]);
 
+    const getPhotoUrl = async (key: string) => {
+        try {
+            const result = await getUrl({ key });
+            setPhotoUrl(result.url.toString());
+        } catch (error) {
+            console.error('Erreur lors de la récupération de l\'URL de la photo:', error);
+        }
+    };
     const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
@@ -47,11 +60,16 @@ const Profile = () => {
 
     const uploadPhoto = async () => {
         if (photoFile && userId) {
+            const key = `${userId}_profile.jpg`;
             try {
-                const result = await Storage.put(`${userId}_profile.jpg`, photoFile, {
-                    contentType: 'image/jpeg',
+                await uploadData({
+                    key: key,
+                    data: photoFile,
+                    options: {
+                        contentType: 'image/jpeg',
+                    }
                 });
-                return result.key;
+                return key;
             } catch (error) {
                 console.error('Erreur lors du téléchargement de la photo:', error);
                 throw error;
@@ -109,11 +127,12 @@ const Profile = () => {
                 await DataStore.delete(userProfile);
                 await DataStore.delete(user);
                 if (user.photo) {
-                    await Storage.remove(user.photo);
+                    await remove({ key: user.photo });
                 }
                 alert('Profil supprimé avec succès !');
                 resetForm(initialState);
                 setIsEditing(false);
+                setPhotoUrl(null);
             } catch (error) {
                 console.error('Erreur lors de la suppression du profil :', error);
                 alert('Une erreur est survenue lors de la suppression du profil.');
@@ -131,7 +150,7 @@ const Profile = () => {
                 <div>
                     <p>Nom: {user.name}</p>
                     <p>Nom d'utilisateur: {user.username}</p>
-                    {user.photo && <img src={user.photo} alt="Profile" style={{width: '200px', height: '200px'}} />}
+                    {photoUrl && <img src={photoUrl} alt="Profile" style={{width: '200px', height: '200px'}} />}
                     <button onClick={() => setIsEditing(true)}>Modifier</button>
                     <button onClick={handleDelete}>Supprimer le profil</button>
                 </div>
