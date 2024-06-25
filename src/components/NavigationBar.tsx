@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getUrl } from '@aws-amplify/storage';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { DataStore } from '@aws-amplify/datastore';
-import { User } from '../models'; // Assurez-vous que le chemin vers vos modèles est correct
+import { User } from '../models';
 
 interface NavigationBarProps {
     onLogout?: () => void;

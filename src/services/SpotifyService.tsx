@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 
-const CLIENT_ID = '79120f863b8c445eb7a511666b8f22cc';
-const CLIENT_SECRET = 'd663dbc5ed0c461fb824717dd9e03f30';
 
 const useSpotify = () => {
     const [accessToken, setAccessToken] = useState('');
@@ -14,7 +12,7 @@ const useSpotify = () => {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: `grant_type=client_credentials&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}`,
+            body: `grant_type=client_credentials&client_id=${process.env.REACT_APP_SPOTIFY_CLIENT_ID}&client_secret=${process.env.REACT_APP_SPOTIFY_CLIENT_SECRET}`,
         };
 
         fetch('https://accounts.spotify.com/api/token', authParameters)
@@ -26,6 +24,7 @@ const useSpotify = () => {
                 console.error('Error fetching access token:', error);
             });
     }, []);
+
 
     const searchTracks = async (artistName: string) => {
         if (!accessToken) {

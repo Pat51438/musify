@@ -8,7 +8,7 @@ import Profile from './Screens/Profil';
 const App: React.FC = () => {
     return (
         <Authenticator>
-            {({ signOut, user }) => (
+            {({ signOut }) => (
                 <Router>
                     <div>
                         <NavigationBar onLogout={signOut}  />
