@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App';
 import { Amplify } from 'aws-amplify';
-import awsconfig from './aws-exports';
+import awsconfig from './amplifyconfiguration.json';
 import { ThemeProvider } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 

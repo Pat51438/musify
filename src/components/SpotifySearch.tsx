@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState,useRef} from 'react';
 import useSpotify from '../services/SpotifyService';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -114,11 +114,16 @@ const SpotifySearch: React.FC = () => {
         const savedPlaylist = localStorage.getItem('playlist');
         return savedPlaylist ? JSON.parse(savedPlaylist) : [];
     });
-
+    const audioRef = useRef<HTMLAudioElement>(null);
     useEffect(() => {
         localStorage.setItem('playlist', JSON.stringify(playlist));
     }, [playlist]);
 
+    useEffect(() => {
+       if(audioRef.current) {
+           audioRef.current.src =currentTrack.preview_url;
+       }
+    }, [currentTrack]);
     const handleSearch = () => {
         searchTracks(searchInput);
     };
@@ -194,7 +199,7 @@ const SpotifySearch: React.FC = () => {
                                     <p>{currentTrack.artists.map((artist: any) => artist.name).join(', ')}</p>
                                 </NowPlayingInfo>
                             </NowPlayingContent>
-                            <audio controls autoPlay style={{width: '100%'}}>
+                            <audio controls autoPlay style={{width: '100%'}} ref={audioRef}>
                                 <source src={currentTrack.preview_url} type="audio/mpeg" />
                             </audio>
                         </>
