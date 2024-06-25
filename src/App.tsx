@@ -4,7 +4,7 @@ import { Authenticator } from '@aws-amplify/ui-react';
 import NavigationBar from './components/NavigationBar';
 import SpotifySearch from './components/SpotifySearch';
 import Profile from './Screens/Profil';
-
+import './i18n';
 const App: React.FC = () => {
     return (
         <Authenticator>

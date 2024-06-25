@@ -5,7 +5,7 @@ import { getUrl } from '@aws-amplify/storage';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { DataStore } from '@aws-amplify/datastore';
 import { User } from '../models';
-
+import { useTranslation } from 'react-i18next';
 interface NavigationBarProps {
     onLogout?: () => void;
 }
@@ -69,13 +69,20 @@ const Username = styled.span`
     color: white;
     font-weight: bold;
 `;
-
+const LanguageButton = styled(Button)`
+    background-color: #4CAF50;
+    &:hover {
+        background-color: #45a049;
+    }
+`;
 const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout }) => {
     const navigate = useNavigate();
+    const { t, i18n } = useTranslation();
     const [photoUrl, setPhotoUrl] = useState<string | null>(null);
     const [username, setUsername] = useState<string | null>(null);
     const [photoLoading, setPhotoLoading] = useState(false);
     const [photoError, setPhotoError] = useState<string | null>(null);
+
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -92,50 +99,56 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout }) => {
                         setPhotoLoading(true);
                         setPhotoError(null);
                         try {
-                            console.log("Tentative de récupération de l'URL pour la clé:", user.photo);
+                            console.log(t('logPhotoKeyAttempt'), user.photo);
                             const result = await getUrl({ key: user.photo });
-                            console.log("Résultat complet de getUrl:", result);
+                            console.log(t('logGetUrlResult'), result);
                             if (result && result.url) {
-                                console.log("URL obtenue:", result.url.toString());
+                                console.log(t('logUrlObtained'), result.url.toString());
                                 setPhotoUrl(result.url.toString());
                             } else {
-                                throw new Error("getUrl n'a pas retourné d'URL valide");
+                                throw new Error(t('errorInvalidUrl'));
                             }
                         } catch (error) {
-                            console.error('Erreur détaillée lors de la récupération de l\'URL de la photo:', error);
-                            setPhotoError("Impossible de charger la photo");
+                            console.error(t('errorPhotoUrl'), error);
+                            setPhotoError(t('errorLoadingPhoto'));
                         } finally {
                             setPhotoLoading(false);
                         }
                     }
                 }
             } catch (error) {
-                console.error('Erreur lors de la récupération des données utilisateur:', error);
+                console.error(t('errorFetchingUserData'), error);
             }
         };
 
         fetchUserData();
-    }, []);
+    }, [t]);
 
     const handleProfileClick = () => {
         navigate('/profile');
     };
-
+    const toggleLanguage = () => {
+        const newLang = i18n.language === 'en' ? 'fr' : 'en';
+        i18n.changeLanguage(newLang);
+    };
     return (
         <Nav>
-            <TitleLink to="/">Musify</TitleLink>
+            <TitleLink to="/">{t('appTitle')}</TitleLink>
             <UserInfo>
                 {photoLoading ? (
-                    <div>Chargement...</div>
+                    <div>{t('loading')}</div>
                 ) : photoError ? (
                     <div>{photoError}</div>
                 ) : photoUrl ? (
-                    <ProfilePic src={photoUrl} alt="Profile" />
+                    <ProfilePic src={photoUrl} alt={t('profileAlt')} />
                 ) : null}
                 {username && <Username>{username}</Username>}
                 <ButtonGroup>
-                    <Button onClick={handleProfileClick}>Profile</Button>
-                    {username && <Button onClick={onLogout}>Logout</Button>}
+                    <Button onClick={handleProfileClick}>{t('profile')}</Button>
+                    {username && <Button onClick={onLogout}>{t('logout')}</Button>}
+                    <LanguageButton onClick={toggleLanguage}>
+                        {i18n.language === 'en' ? 'FR' : 'EN'}
+                    </LanguageButton>
                 </ButtonGroup>
             </UserInfo>
         </Nav>
