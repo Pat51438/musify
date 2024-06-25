@@ -1,9 +1,10 @@
-import React, {useEffect, useState,useRef} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import useSpotify from '../services/SpotifyService';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faPlus, faSearch} from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
 import PlaylistComponent from "./Playlist";
+import { useTranslation } from 'react-i18next';
 
 const AddToPlaylistButton = styled.button`
     padding: 5px 10px;
@@ -20,16 +21,16 @@ const AddToPlaylistButton = styled.button`
 `;
 
 const Container = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 20px;
-  height: calc(100vh - 60px); // Ajustez selon la hauteur de votre barre de navigation
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    height: calc(100vh - 60px); // Ajustez selon la hauteur de votre barre de navigation
 `;
 
 const Column = styled.div`
-  flex: 1;
-  margin: 0 10px;
-  overflow-y: auto;
+    flex: 1;
+    margin: 0 10px;
+    overflow-y: auto;
 `;
 
 const SearchContainer = styled.div`
@@ -50,8 +51,9 @@ const SearchButton = styled.button`
     color: white;
     border: none;
     cursor: pointer;
+
     &:hover {
-        background-color:#61dafb ;
+        background-color: #61dafb;
     }
 `;
 
@@ -77,53 +79,54 @@ const AlbumImage = styled.img`
 `;
 
 const TrackInfo = styled.div`
-  flex-grow: 1;
-  margin-left: 10px;
+    flex-grow: 1;
+    margin-left: 10px;
 `;
 
 const NowPlaying = styled.div`
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const NowPlayingContent = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
 `;
 
 const NowPlayingImage = styled.img`
-  width: 100px;
-  height: 100px;
-  margin-right: 15px;
-  border-radius: 4px;
+    width: 100px;
+    height: 100px;
+    margin-right: 15px;
+    border-radius: 4px;
 `;
 
 const NowPlayingInfo = styled.div`
-  flex-grow: 1;
+    flex-grow: 1;
 `;
 
 const SpotifySearch: React.FC = () => {
     const { searchInput, setSearchInput, tracks, searchTracks } = useSpotify();
     const [currentTrack, setCurrentTrack] = useState<any>(null);
     const [playlist, setPlaylist] = useState<any[]>(() => {
-
-        // Initialiser la playlist à partir du localStorage
         const savedPlaylist = localStorage.getItem('playlist');
         return savedPlaylist ? JSON.parse(savedPlaylist) : [];
     });
     const audioRef = useRef<HTMLAudioElement>(null);
+    const { t } = useTranslation();
+
     useEffect(() => {
         localStorage.setItem('playlist', JSON.stringify(playlist));
     }, [playlist]);
 
     useEffect(() => {
-       if(audioRef.current) {
-           audioRef.current.src =currentTrack.preview_url;
-       }
+        if (audioRef.current) {
+            audioRef.current.src = currentTrack?.preview_url || '';
+        }
     }, [currentTrack]);
+
     const handleSearch = () => {
         searchTracks(searchInput);
     };
@@ -131,14 +134,13 @@ const SpotifySearch: React.FC = () => {
     const handleTrackClick = (track: any) => {
         setCurrentTrack(track);
     };
+
     const handleDeleteTrack = (trackId: string) => {
         setPlaylist(prevPlaylist => prevPlaylist.filter(track => track.id !== trackId));
     };
 
     const addToPlaylist = (track: any) => {
         setPlaylist(prevPlaylist => {
-
-            // Vérifier si la chanson existe déjà dans la playlist
             if (!prevPlaylist.some(t => t.id === track.id)) {
                 return [...prevPlaylist, track];
             }
@@ -147,8 +149,6 @@ const SpotifySearch: React.FC = () => {
     };
 
     const handleTrackContainerClick = (track: any, event: React.MouseEvent) => {
-
-        // Vérifie si le clic n'était pas sur le bouton "Add to Playlist"
         if (!(event.target as Element).closest('button')) {
             handleTrackClick(track);
         }
@@ -162,10 +162,10 @@ const SpotifySearch: React.FC = () => {
                         type="text"
                         value={searchInput}
                         onChange={(e) => setSearchInput(e.target.value)}
-                        placeholder="Search for an artist..."
+                        placeholder={t('searchPlaceholder')}
                     />
                     <SearchButton onClick={handleSearch}>
-                        <FontAwesomeIcon icon={faSearch} /> Search
+                        <FontAwesomeIcon icon={faSearch} /> {t('searchButton')}
                     </SearchButton>
                 </SearchContainer>
                 {tracks.map((track, index) => (
@@ -182,7 +182,7 @@ const SpotifySearch: React.FC = () => {
                             <p>{track.artists.map((artist: any) => artist.name).join(', ')}</p>
                         </TrackInfo>
                         <AddToPlaylistButton onClick={() => addToPlaylist(track)}>
-                            <FontAwesomeIcon icon={faPlus} /> Add
+                            <FontAwesomeIcon icon={faPlus} /> {t('addButton')}
                         </AddToPlaylistButton>
                     </TrackContainer>
                 ))}
@@ -194,17 +194,17 @@ const SpotifySearch: React.FC = () => {
                             <NowPlayingContent>
                                 <NowPlayingImage src={currentTrack.album?.images[0]?.url || ''} alt={currentTrack.name} />
                                 <NowPlayingInfo>
-                                    <h3>Now Playing: </h3>
+                                    <h3>{t('nowPlaying')}:</h3>
                                     <p>{currentTrack.name}</p>
                                     <p>{currentTrack.artists.map((artist: any) => artist.name).join(', ')}</p>
                                 </NowPlayingInfo>
                             </NowPlayingContent>
-                            <audio controls autoPlay style={{width: '100%'}} ref={audioRef}>
+                            <audio controls autoPlay style={{ width: '100%' }} ref={audioRef}>
                                 <source src={currentTrack.preview_url} type="audio/mpeg" />
                             </audio>
                         </>
                     ) : (
-                        <p>Select a track to play</p>
+                        <p>{t('selectTrack')}</p>
                     )}
                 </NowPlaying>
             </Column>
@@ -218,4 +218,5 @@ const SpotifySearch: React.FC = () => {
         </Container>
     );
 };
+
 export default SpotifySearch;

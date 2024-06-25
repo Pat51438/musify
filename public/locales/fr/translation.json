@@ -23,6 +23,15 @@
   "edit": "Modifier",
   "deleteProfile": "Supprimer le profil",
   "saveChanges": "Enregistrer les modifications",
-  "cancel": "Annuler"
+  "cancel": "Annuler",
+  "playlistTitle": "Votre Playlist",
+  "deleteTrack": "Supprimer la piste",
+  "trackName": "Nom de la piste",
+  "artistName": "Nom de l'artiste",
+  "searchPlaceholder": "Rechercher un artiste...",
+  "searchButton": "Rechercher",
+  "addButton": "Ajouter",
+  "nowPlaying": "En cours de lecture",
+  "selectTrack": "Sélectionnez une piste à jouer"
 }
 

@@ -23,5 +23,14 @@
   "edit": "Edit",
   "deleteProfile": "Delete Profile",
   "saveChanges": "Save Changes",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "playlistTitle": "Your Playlist",
+  "deleteTrack": "Delete Track",
+  "trackName": "Track Name",
+  "artistName": "Artist Name",
+  "searchPlaceholder": "Search for an artist...",
+  "searchButton": "Search",
+  "addButton": "Add",
+  "nowPlaying": "Now Playing",
+  "selectTrack": "Select a track to play"
 }
