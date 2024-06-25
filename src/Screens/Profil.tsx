@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DataStore } from '@aws-amplify/datastore';
 import { uploadData, remove, getUrl } from '@aws-amplify/storage';
 import { User, UserProfile } from '../models';
-import { getCurrentUser} from 'aws-amplify/auth';
+import { getCurrentUser } from 'aws-amplify/auth';
 import { fetchAuthSession } from 'aws-amplify/auth';
 import { useForm } from '../hooks/useForm';
 import FormInput from '../components/FormInput';
@@ -12,6 +12,9 @@ const ProfileContainer = styled.div`
     max-width: 600px;
     margin: 0 auto;
     padding: 2rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const ProfileImage = styled.img`
@@ -36,6 +39,25 @@ const Button = styled.button`
     &:hover {
         background-color: #61dafb;
     }
+`;
+
+const FileInputContainer = styled.div`
+    margin-bottom: 1rem;
+`;
+
+const FileInputLabel = styled.label`
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #333;
+`;
+
+const FileInput = styled.input`
+    display: block;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 `;
 
 interface FormValues {
@@ -256,16 +278,16 @@ const Profile: React.FC = () => {
                         value={values.username}
                         onChange={handleChange}
                     />
-                    <div>
-                        <label htmlFor="photo">Photo de profil:</label>
-                        <input
+                    <FileInputContainer>
+                        <FileInputLabel htmlFor="photo">Photo de profil:</FileInputLabel>
+                        <FileInput
                             type="file"
                             id="photo"
                             name="photo"
                             onChange={handlePhotoChange}
                             accept="image/*"
                         />
-                    </div>
+                    </FileInputContainer>
                     <Button type="submit">Créer le profil</Button>
                 </form>
             </ProfileContainer>
@@ -297,16 +319,16 @@ const Profile: React.FC = () => {
                         value={values.username}
                         onChange={handleChange}
                     />
-                    <div>
-                        <label htmlFor="photo">Photo de profil:</label>
-                        <input
+                    <FileInputContainer>
+                        <FileInputLabel htmlFor="photo">Photo de profil:</FileInputLabel>
+                        <FileInput
                             type="file"
                             id="photo"
                             name="photo"
                             onChange={handlePhotoChange}
                             accept="image/*"
                         />
-                    </div>
+                    </FileInputContainer>
                     <Button type="submit">
                         {user ? 'Enregistrer les modifications' : 'Créer le profil'}
                     </Button>
@@ -316,4 +338,5 @@ const Profile: React.FC = () => {
         </ProfileContainer>
     );
 }
+
 export default Profile;
