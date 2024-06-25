@@ -8,6 +8,7 @@ export type CreateUserInput = {
   username: string,
   name: string,
   photo?: string | null,
+  _version?: number | null,
 };
 
 export type ModelUserConditionInput = {
@@ -18,6 +19,7 @@ export type ModelUserConditionInput = {
   and?: Array< ModelUserConditionInput | null > | null,
   or?: Array< ModelUserConditionInput | null > | null,
   not?: ModelUserConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
   owner?: ModelStringInput | null,
@@ -63,6 +65,13 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
+export type ModelBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
 export type User = {
   __typename: "User",
   id: string,
@@ -72,6 +81,9 @@ export type User = {
   photo?: string | null,
   createdAt: string,
   updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
   owner?: string | null,
 };
 
@@ -81,15 +93,18 @@ export type UpdateUserInput = {
   username?: string | null,
   name?: string | null,
   photo?: string | null,
+  _version?: number | null,
 };
 
 export type DeleteUserInput = {
   id: string,
+  _version?: number | null,
 };
 
 export type CreateUserProfileInput = {
   id?: string | null,
   userProfileId: string,
+  _version?: number | null,
   userProfileUserId?: string | null,
 };
 
@@ -98,6 +113,7 @@ export type ModelUserProfileConditionInput = {
   and?: Array< ModelUserProfileConditionInput | null > | null,
   or?: Array< ModelUserProfileConditionInput | null > | null,
   not?: ModelUserProfileConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
   userProfileUserId?: ModelIDInput | null,
@@ -127,6 +143,9 @@ export type UserProfile = {
   userProfileId: string,
   createdAt: string,
   updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
   userProfileUserId?: string | null,
   owner?: string | null,
 };
@@ -134,11 +153,13 @@ export type UserProfile = {
 export type UpdateUserProfileInput = {
   id: string,
   userProfileId?: string | null,
+  _version?: number | null,
   userProfileUserId?: string | null,
 };
 
 export type DeleteUserProfileInput = {
   id: string,
+  _version?: number | null,
 };
 
 export type ModelUserFilterInput = {
@@ -152,6 +173,7 @@ export type ModelUserFilterInput = {
   and?: Array< ModelUserFilterInput | null > | null,
   or?: Array< ModelUserFilterInput | null > | null,
   not?: ModelUserFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
   owner?: ModelStringInput | null,
 };
 
@@ -159,6 +181,7 @@ export type ModelUserConnection = {
   __typename: "ModelUserConnection",
   items:  Array<User | null >,
   nextToken?: string | null,
+  startedAt?: number | null,
 };
 
 export type ModelUserProfileFilterInput = {
@@ -169,6 +192,7 @@ export type ModelUserProfileFilterInput = {
   and?: Array< ModelUserProfileFilterInput | null > | null,
   or?: Array< ModelUserProfileFilterInput | null > | null,
   not?: ModelUserProfileFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
   userProfileUserId?: ModelIDInput | null,
   owner?: ModelStringInput | null,
 };
@@ -177,6 +201,7 @@ export type ModelUserProfileConnection = {
   __typename: "ModelUserProfileConnection",
   items:  Array<UserProfile | null >,
   nextToken?: string | null,
+  startedAt?: number | null,
 };
 
 export type ModelSubscriptionUserFilterInput = {
@@ -189,6 +214,7 @@ export type ModelSubscriptionUserFilterInput = {
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionUserFilterInput | null > | null,
   or?: Array< ModelSubscriptionUserFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
   owner?: ModelStringInput | null,
 };
 
@@ -229,6 +255,7 @@ export type ModelSubscriptionUserProfileFilterInput = {
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionUserProfileFilterInput | null > | null,
   or?: Array< ModelSubscriptionUserProfileFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
   userProfileUserId?: ModelSubscriptionIDInput | null,
   owner?: ModelStringInput | null,
 };
@@ -248,6 +275,9 @@ export type CreateUserMutation = {
     photo?: string | null,
     createdAt: string,
     updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
     owner?: string | null,
   } | null,
 };
@@ -267,6 +297,9 @@ export type UpdateUserMutation = {
     photo?: string | null,
     createdAt: string,
     updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
     owner?: string | null,
   } | null,
 };
@@ -286,6 +319,9 @@ export type DeleteUserMutation = {
     photo?: string | null,
     createdAt: string,
     updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
     owner?: string | null,
   } | null,
 };
@@ -308,11 +344,17 @@ export type CreateUserProfileMutation = {
       photo?: string | null,
       createdAt: string,
       updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
       owner?: string | null,
     } | null,
     userProfileId: string,
     createdAt: string,
     updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
     userProfileUserId?: string | null,
     owner?: string | null,
   } | null,
@@ -336,11 +378,17 @@ export type UpdateUserProfileMutation = {
       photo?: string | null,
       createdAt: string,
       updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
       owner?: string | null,
     } | null,
     userProfileId: string,
     createdAt: string,
     updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
     userProfileUserId?: string | null,
     owner?: string | null,
   } | null,
@@ -364,11 +412,17 @@ export type DeleteUserProfileMutation = {
       photo?: string | null,
       createdAt: string,
       updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
       owner?: string | null,
     } | null,
     userProfileId: string,
     createdAt: string,
     updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
     userProfileUserId?: string | null,
     owner?: string | null,
   } | null,
@@ -388,6 +442,9 @@ export type GetUserQuery = {
     photo?: string | null,
     createdAt: string,
     updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
     owner?: string | null,
   } | null,
 };
@@ -410,9 +467,42 @@ export type ListUsersQuery = {
       photo?: string | null,
       createdAt: string,
       updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
       owner?: string | null,
     } | null >,
     nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncUsersQueryVariables = {
+  filter?: ModelUserFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncUsersQuery = {
+  syncUsers?:  {
+    __typename: "ModelUserConnection",
+    items:  Array< {
+      __typename: "User",
+      id: string,
+      userID: string,
+      username: string,
+      name: string,
+      photo?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      owner?: string | null,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
   } | null,
 };
 
@@ -433,11 +523,17 @@ export type GetUserProfileQuery = {
       photo?: string | null,
       createdAt: string,
       updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
       owner?: string | null,
     } | null,
     userProfileId: string,
     createdAt: string,
     updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
     userProfileUserId?: string | null,
     owner?: string | null,
   } | null,
@@ -458,10 +554,41 @@ export type ListUserProfilesQuery = {
       userProfileId: string,
       createdAt: string,
       updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
       userProfileUserId?: string | null,
       owner?: string | null,
     } | null >,
     nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncUserProfilesQueryVariables = {
+  filter?: ModelUserProfileFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncUserProfilesQuery = {
+  syncUserProfiles?:  {
+    __typename: "ModelUserProfileConnection",
+    items:  Array< {
+      __typename: "UserProfile",
+      id: string,
+      userProfileId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userProfileUserId?: string | null,
+      owner?: string | null,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
   } | null,
 };
 
@@ -480,6 +607,9 @@ export type OnCreateUserSubscription = {
     photo?: string | null,
     createdAt: string,
     updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
     owner?: string | null,
   } | null,
 };
@@ -499,6 +629,9 @@ export type OnUpdateUserSubscription = {
     photo?: string | null,
     createdAt: string,
     updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
     owner?: string | null,
   } | null,
 };
@@ -518,6 +651,9 @@ export type OnDeleteUserSubscription = {
     photo?: string | null,
     createdAt: string,
     updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
     owner?: string | null,
   } | null,
 };
@@ -540,11 +676,17 @@ export type OnCreateUserProfileSubscription = {
       photo?: string | null,
       createdAt: string,
       updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
       owner?: string | null,
     } | null,
     userProfileId: string,
     createdAt: string,
     updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
     userProfileUserId?: string | null,
     owner?: string | null,
   } | null,
@@ -568,11 +710,17 @@ export type OnUpdateUserProfileSubscription = {
       photo?: string | null,
       createdAt: string,
       updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
       owner?: string | null,
     } | null,
     userProfileId: string,
     createdAt: string,
     updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
     userProfileUserId?: string | null,
     owner?: string | null,
   } | null,
@@ -596,11 +744,17 @@ export type OnDeleteUserProfileSubscription = {
       photo?: string | null,
       createdAt: string,
       updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
       owner?: string | null,
     } | null,
     userProfileId: string,
     createdAt: string,
     updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
     userProfileUserId?: string | null,
     owner?: string | null,
   } | null,

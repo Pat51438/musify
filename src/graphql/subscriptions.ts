@@ -20,6 +20,9 @@ export const onCreateUser = /* GraphQL */ `subscription OnCreateUser(
     photo
     createdAt
     updatedAt
+    _version
+    _deleted
+    _lastChangedAt
     owner
     __typename
   }
@@ -40,6 +43,9 @@ export const onUpdateUser = /* GraphQL */ `subscription OnUpdateUser(
     photo
     createdAt
     updatedAt
+    _version
+    _deleted
+    _lastChangedAt
     owner
     __typename
   }
@@ -60,6 +66,9 @@ export const onDeleteUser = /* GraphQL */ `subscription OnDeleteUser(
     photo
     createdAt
     updatedAt
+    _version
+    _deleted
+    _lastChangedAt
     owner
     __typename
   }
@@ -82,12 +91,18 @@ export const onCreateUserProfile = /* GraphQL */ `subscription OnCreateUserProfi
       photo
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       owner
       __typename
     }
     userProfileId
     createdAt
     updatedAt
+    _version
+    _deleted
+    _lastChangedAt
     userProfileUserId
     owner
     __typename
@@ -111,12 +126,18 @@ export const onUpdateUserProfile = /* GraphQL */ `subscription OnUpdateUserProfi
       photo
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       owner
       __typename
     }
     userProfileId
     createdAt
     updatedAt
+    _version
+    _deleted
+    _lastChangedAt
     userProfileUserId
     owner
     __typename
@@ -140,12 +161,18 @@ export const onDeleteUserProfile = /* GraphQL */ `subscription OnDeleteUserProfi
       photo
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       owner
       __typename
     }
     userProfileId
     createdAt
     updatedAt
+    _version
+    _deleted
+    _lastChangedAt
     userProfileUserId
     owner
     __typename

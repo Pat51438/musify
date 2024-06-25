@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
+import { getUrl } from '@aws-amplify/storage';
+import { getCurrentUser } from 'aws-amplify/auth';
+import { DataStore } from '@aws-amplify/datastore';
+import { User } from '../models'; // Assurez-vous que le chemin vers vos modèles est correct
 
 interface NavigationBarProps {
     onLogout?: () => void;
-    username?: string;
-    onCreateProfile?: () => void;
 }
 
 const Nav = styled.nav`
@@ -50,23 +52,92 @@ const TitleLink = styled(Link)`
     }
 `;
 
-const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout, username, onCreateProfile }) => {
-    const navigate = useNavigate();
+const UserInfo = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+`;
 
-    const handleCreateProfileClick = () => {
-        if (onCreateProfile) {
-            onCreateProfile();
-        }
+const ProfilePic = styled.img`
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+`;
+
+const Username = styled.span`
+    color: white;
+    font-weight: bold;
+`;
+
+const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout }) => {
+    const navigate = useNavigate();
+    const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+    const [username, setUsername] = useState<string | null>(null);
+    const [photoLoading, setPhotoLoading] = useState(false);
+    const [photoError, setPhotoError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const authUser = await getCurrentUser();
+                const { username: authUsername } = authUser;
+
+                const users = await DataStore.query(User, (u) => u.userID.eq(authUsername));
+                if (users && users.length > 0) {
+                    const user = users[0];
+                    setUsername(user.name || authUsername);
+
+                    if (user.photo) {
+                        setPhotoLoading(true);
+                        setPhotoError(null);
+                        try {
+                            console.log("Tentative de récupération de l'URL pour la clé:", user.photo);
+                            const result = await getUrl({ key: user.photo });
+                            console.log("Résultat complet de getUrl:", result);
+                            if (result && result.url) {
+                                console.log("URL obtenue:", result.url.toString());
+                                setPhotoUrl(result.url.toString());
+                            } else {
+                                throw new Error("getUrl n'a pas retourné d'URL valide");
+                            }
+                        } catch (error) {
+                            console.error('Erreur détaillée lors de la récupération de l\'URL de la photo:', error);
+                            setPhotoError("Impossible de charger la photo");
+                        } finally {
+                            setPhotoLoading(false);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Erreur lors de la récupération des données utilisateur:', error);
+            }
+        };
+
+        fetchUserData();
+    }, []);
+
+    const handleProfileClick = () => {
         navigate('/profile');
     };
 
     return (
         <Nav>
             <TitleLink to="/">Musify</TitleLink>
-            <ButtonGroup>
-                <Button onClick={handleCreateProfileClick}>Create Profile</Button>
-                <Button onClick={onLogout}>Logout</Button>
-            </ButtonGroup>
+            <UserInfo>
+                {photoLoading ? (
+                    <div>Chargement...</div>
+                ) : photoError ? (
+                    <div>{photoError}</div>
+                ) : photoUrl ? (
+                    <ProfilePic src={photoUrl} alt="Profile" />
+                ) : null}
+                {username && <Username>{username}</Username>}
+                <ButtonGroup>
+                    <Button onClick={handleProfileClick}>Profile</Button>
+                    {username && <Button onClick={onLogout}>Logout</Button>}
+                </ButtonGroup>
+            </UserInfo>
         </Nav>
     );
 };

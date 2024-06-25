@@ -1,6 +1,5 @@
-// src/hooks/useUserProfile.ts
 import { useState, useCallback } from 'react';
-import { DataStore } from '@aws-amplify/datastore';
+import { DataStore } from '@aws-amplify/datastore'; // Mise à jour ici
 import { User, UserProfile } from '../models';
 
 export const useUserProfile = () => {

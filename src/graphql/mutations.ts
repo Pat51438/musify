@@ -20,6 +20,9 @@ export const createUser = /* GraphQL */ `mutation CreateUser(
     photo
     createdAt
     updatedAt
+    _version
+    _deleted
+    _lastChangedAt
     owner
     __typename
   }
@@ -40,6 +43,9 @@ export const updateUser = /* GraphQL */ `mutation UpdateUser(
     photo
     createdAt
     updatedAt
+    _version
+    _deleted
+    _lastChangedAt
     owner
     __typename
   }
@@ -60,6 +66,9 @@ export const deleteUser = /* GraphQL */ `mutation DeleteUser(
     photo
     createdAt
     updatedAt
+    _version
+    _deleted
+    _lastChangedAt
     owner
     __typename
   }
@@ -82,12 +91,18 @@ export const createUserProfile = /* GraphQL */ `mutation CreateUserProfile(
       photo
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       owner
       __typename
     }
     userProfileId
     createdAt
     updatedAt
+    _version
+    _deleted
+    _lastChangedAt
     userProfileUserId
     owner
     __typename
@@ -111,12 +126,18 @@ export const updateUserProfile = /* GraphQL */ `mutation UpdateUserProfile(
       photo
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       owner
       __typename
     }
     userProfileId
     createdAt
     updatedAt
+    _version
+    _deleted
+    _lastChangedAt
     userProfileUserId
     owner
     __typename
@@ -140,12 +161,18 @@ export const deleteUserProfile = /* GraphQL */ `mutation DeleteUserProfile(
       photo
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       owner
       __typename
     }
     userProfileId
     createdAt
     updatedAt
+    _version
+    _deleted
+    _lastChangedAt
     userProfileUserId
     owner
     __typename

@@ -17,6 +17,9 @@ export const getUser = /* GraphQL */ `query GetUser($id: ID!) {
     photo
     createdAt
     updatedAt
+    _version
+    _deleted
+    _lastChangedAt
     owner
     __typename
   }
@@ -36,14 +39,50 @@ export const listUsers = /* GraphQL */ `query ListUsers(
       photo
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       owner
       __typename
     }
     nextToken
+    startedAt
     __typename
   }
 }
 ` as GeneratedQuery<APITypes.ListUsersQueryVariables, APITypes.ListUsersQuery>;
+export const syncUsers = /* GraphQL */ `query SyncUsers(
+  $filter: ModelUserFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncUsers(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      userID
+      username
+      name
+      photo
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      owner
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<APITypes.SyncUsersQueryVariables, APITypes.SyncUsersQuery>;
 export const getUserProfile = /* GraphQL */ `query GetUserProfile($id: ID!) {
   getUserProfile(id: $id) {
     id
@@ -55,12 +94,18 @@ export const getUserProfile = /* GraphQL */ `query GetUserProfile($id: ID!) {
       photo
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       owner
       __typename
     }
     userProfileId
     createdAt
     updatedAt
+    _version
+    _deleted
+    _lastChangedAt
     userProfileUserId
     owner
     __typename
@@ -81,15 +126,52 @@ export const listUserProfiles = /* GraphQL */ `query ListUserProfiles(
       userProfileId
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       userProfileUserId
       owner
       __typename
     }
     nextToken
+    startedAt
     __typename
   }
 }
 ` as GeneratedQuery<
   APITypes.ListUserProfilesQueryVariables,
   APITypes.ListUserProfilesQuery
+>;
+export const syncUserProfiles = /* GraphQL */ `query SyncUserProfiles(
+  $filter: ModelUserProfileFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncUserProfiles(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      userProfileId
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      userProfileUserId
+      owner
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.SyncUserProfilesQueryVariables,
+  APITypes.SyncUserProfilesQuery
 >;
