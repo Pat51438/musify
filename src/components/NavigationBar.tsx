@@ -70,9 +70,9 @@ const Username = styled.span`
     font-weight: bold;
 `;
 const LanguageButton = styled(Button)`
-    background-color: #4CAF50;
+    background-color: #21a1f1;
     &:hover {
-        background-color: #45a049;
+        color: #61dafb;
     }
 `;
 const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout }) => {

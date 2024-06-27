@@ -1,4 +1,4 @@
-import React from 'react';
+import React , { Suspense }from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Authenticator } from '@aws-amplify/ui-react';
 import NavigationBar from './components/NavigationBar';
@@ -10,13 +10,15 @@ const App: React.FC = () => {
         <Authenticator>
             {({ signOut }) => (
                 <Router>
-                    <div>
-                        <NavigationBar onLogout={signOut}  />
-                        <Routes>
-                            <Route path="/" element={<SpotifySearch />} />
-                            <Route path="/profile" element={<Profile />} />
-                        </Routes>
-                    </div>
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <div>
+                            <NavigationBar onLogout={signOut} />
+                            <Routes>
+                                <Route path="/" element={<SpotifySearch />} />
+                                <Route path="/profile" element={<Profile />} />
+                            </Routes>
+                        </div>
+                    </Suspense>
                 </Router>
             )}
         </Authenticator>
