@@ -84,7 +84,6 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout }) => {
     const [photoLoading, setPhotoLoading] = useState(false);
     const [photoError, setPhotoError] = useState<string | null>(null);
 
-
     useEffect(() => {
         const fetchUserData = async () => {
             try {
@@ -145,7 +144,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout }) => {
                 ) : photoUrl ? (
                     <ProfilePic src={photoUrl} alt={t('profileAlt')} />
                 ) : null}
-                {<Username>{fullname}</Username>}
+                { <Username>{fullname}</Username>}
                 <ButtonGroup>
                     <Button onClick={handleProfileClick}>{t('profile')}</Button>
                     <Button onClick={onLogout}>{t('logout')}</Button>
