@@ -80,9 +80,10 @@ const LanguageButton = styled(Button)`
 const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout }) => {
     const navigate = useNavigate();
     const { t, i18n } = useTranslation();
-    const { username, photoUrl, updateUser } = useUser();
+    const { fullname, photoUrl, updateUser } = useUser();
     const [photoLoading, setPhotoLoading] = useState(false);
     const [photoError, setPhotoError] = useState<string | null>(null);
+
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -144,10 +145,10 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout }) => {
                 ) : photoUrl ? (
                     <ProfilePic src={photoUrl} alt={t('profileAlt')} />
                 ) : null}
-                {username && <Username>{username}</Username>}
+                {<Username>{fullname}</Username>}
                 <ButtonGroup>
                     <Button onClick={handleProfileClick}>{t('profile')}</Button>
-                    {username && <Button onClick={onLogout}>{t('logout')}</Button>}
+                    <Button onClick={onLogout}>{t('logout')}</Button>
                     <LanguageButton onClick={toggleLanguage}>
                         {i18n.language === 'en' ? 'FR' : 'EN'}
                     </LanguageButton>

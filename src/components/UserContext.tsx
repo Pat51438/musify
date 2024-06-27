@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 interface UserContextType {
-    username: string | null;
+    fullname: string | null;
     photoUrl: string | null;
     updateUser: (newUsername: string | null, newPhotoUrl: string | null) => void;
 }
@@ -9,16 +9,16 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [username, setUsername] = useState<string | null>(null);
+    const [fullname, setfullname] = useState<string | null>(null);
     const [photoUrl, setPhotoUrl] = useState<string | null>(null);
 
     const updateUser = (newUsername: string | null, newPhotoUrl: string | null) => {
-        setUsername(newUsername);
+        setfullname(newUsername);
         setPhotoUrl(newPhotoUrl);
     };
 
     return (
-        <UserContext.Provider value={{ username, photoUrl, updateUser }}>
+        <UserContext.Provider value={{ fullname, photoUrl, updateUser }}>
             {children}
         </UserContext.Provider>
     );
