@@ -108,7 +108,7 @@ const NowPlayingInfo = styled.div`
 `;
 
 const SpotifySearch: React.FC = () => {
-    const { t} = useTranslation();
+    const { t } = useTranslation();
     const { searchInput, setSearchInput, tracks, searchTracks } = useSpotify();
     const [currentTrack, setCurrentTrack] = useState<any>(null);
     const [playlist, setPlaylist] = useState<any[]>(() => {
@@ -116,7 +116,6 @@ const SpotifySearch: React.FC = () => {
         return savedPlaylist ? JSON.parse(savedPlaylist) : [];
     });
     const audioRef = useRef<HTMLAudioElement>(null);
-    //const { t } = useTranslation();
 
     useEffect(() => {
         localStorage.setItem('playlist', JSON.stringify(playlist));
@@ -205,7 +204,7 @@ const SpotifySearch: React.FC = () => {
                             </audio>
                         </>
                     ) : (
-                        <p>{('selectTrack')}</p>
+                        <p>{t('selectTrack')}</p>
                     )}
                 </NowPlaying>
             </Column>

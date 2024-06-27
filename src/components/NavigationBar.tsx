@@ -42,7 +42,7 @@ const Button = styled.button`
 `;
 
 const TitleLink = styled(Link)`
-    font-size: 1.5rem;
+    font-size: 2.5rem;
     margin: 0;
     color: white;
     text-decoration: none;
@@ -60,8 +60,8 @@ const UserInfo = styled.div`
 `;
 
 const ProfilePic = styled.img`
-    width: 40px;
-    height: 40px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     object-fit: cover;
 `;
