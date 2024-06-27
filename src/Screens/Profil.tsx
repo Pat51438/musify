@@ -250,25 +250,37 @@ const Profile: React.FC = () => {
 
 
     const handleDelete = async () => {
-        if (userProfile && user) {
+        console.log("Tentative de suppression. userProfile:", userProfile, "user:", user);
+        if (userProfile) {
             try {
                 await DataStore.delete(userProfile);
-                await DataStore.delete(user);
-                if (user.photo) {
-                    await remove({ key: user.photo });
-                }
-                alert(t('profileDeleteSuccess'));
-                resetForm(initialState);
-                setUser(null);
-                setUserProfile(null);
-                setIsEditing(false);
-                setPhotoUrl(null);
-                setIsEditing(true);
+                console.log("UserProfile supprimé");
             } catch (error) {
-                console.error(t('profileDeleteError'), error);
-                alert(t('profileDeleteErrorMessage'));
+                console.error("Erreur lors de la suppression de UserProfile:", error);
             }
         }
+        if (user) {
+            try {
+                await DataStore.delete(user);
+                console.log("User supprimé");
+                if (user.photo) {
+                    await remove({ key: user.photo });
+                    console.log("Photo supprimée");
+                }
+            } catch (error) {
+                console.error("Erreur lors de la suppression de User:", error);
+            }
+        }
+        if (!userProfile && !user) {
+            console.log("Aucun profil ou utilisateur à supprimer");
+        }
+        // Réinitialisation des états
+        alert(t('profileDeleteSuccess'));
+        resetForm(initialState);
+        setUser(null);
+        setUserProfile(null);
+        setIsEditing(false);
+        setPhotoUrl(null);
     };
 
     if (loading) return <div>{t('loading')}</div>;
