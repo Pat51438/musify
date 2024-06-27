@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
 import PlaylistComponent from "./Playlist";
-//import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 const AddToPlaylistButton = styled.button`
     padding: 5px 10px;
@@ -108,6 +108,7 @@ const NowPlayingInfo = styled.div`
 `;
 
 const SpotifySearch: React.FC = () => {
+    const { t} = useTranslation();
     const { searchInput, setSearchInput, tracks, searchTracks } = useSpotify();
     const [currentTrack, setCurrentTrack] = useState<any>(null);
     const [playlist, setPlaylist] = useState<any[]>(() => {
@@ -162,10 +163,10 @@ const SpotifySearch: React.FC = () => {
                         type="text"
                         value={searchInput}
                         onChange={(e) => setSearchInput(e.target.value)}
-                        placeholder={('searchPlaceholder')}
+                        placeholder={t('searchPlaceholder')}
                     />
                     <SearchButton onClick={handleSearch}>
-                        <FontAwesomeIcon icon={faSearch} /> {('searchButton')}
+                        <FontAwesomeIcon icon={faSearch} /> {t('searchButton')}
                     </SearchButton>
                 </SearchContainer>
                 {tracks.map((track, index) => (
@@ -182,7 +183,7 @@ const SpotifySearch: React.FC = () => {
                             <p>{track.artists.map((artist: any) => artist.name).join(', ')}</p>
                         </TrackInfo>
                         <AddToPlaylistButton onClick={() => addToPlaylist(track)}>
-                            <FontAwesomeIcon icon={faPlus} /> {('addButton')}
+                            <FontAwesomeIcon icon={faPlus} /> {t('addButton')}
                         </AddToPlaylistButton>
                     </TrackContainer>
                 ))}
@@ -194,7 +195,7 @@ const SpotifySearch: React.FC = () => {
                             <NowPlayingContent>
                                 <NowPlayingImage src={currentTrack.album?.images[0]?.url || ''} alt={currentTrack.name} />
                                 <NowPlayingInfo>
-                                    <h3>{('nowPlaying')}:</h3>
+                                    <h3>{t('nowPlaying')}:</h3>
                                     <p>{currentTrack.name}</p>
                                     <p>{currentTrack.artists.map((artist: any) => artist.name).join(', ')}</p>
                                 </NowPlayingInfo>
