@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState} from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import { getUrl } from '@aws-amplify/storage';
@@ -6,6 +6,7 @@ import { getCurrentUser } from 'aws-amplify/auth';
 import { DataStore } from '@aws-amplify/datastore';
 import { User } from '../models';
 import { useTranslation } from 'react-i18next';
+import { useUser } from './UserContext';
 interface NavigationBarProps {
     onLogout?: () => void;
 }
@@ -75,14 +76,13 @@ const LanguageButton = styled(Button)`
         color: #61dafb;
     }
 `;
+
 const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout }) => {
     const navigate = useNavigate();
     const { t, i18n } = useTranslation();
-    const [photoUrl, setPhotoUrl] = useState<string | null>(null);
-    const [username, setUsername] = useState<string | null>(null);
+    const { username, photoUrl, updateUser } = useUser();
     const [photoLoading, setPhotoLoading] = useState(false);
     const [photoError, setPhotoError] = useState<string | null>(null);
-
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -93,7 +93,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout }) => {
                 const users = await DataStore.query(User, (u) => u.userID.eq(authUsername));
                 if (users && users.length > 0) {
                     const user = users[0];
-                    setUsername(user.name || authUsername);
+                    updateUser(user.name || authUsername, null);
 
                     if (user.photo) {
                         setPhotoLoading(true);
@@ -104,7 +104,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout }) => {
                             console.log(t('logGetUrlResult'), result);
                             if (result && result.url) {
                                 console.log(t('logUrlObtained'), result.url.toString());
-                                setPhotoUrl(result.url.toString());
+                                updateUser(user.name || authUsername, result.url.toString());
                             } else {
                                 throw new Error(t('errorInvalidUrl'));
                             }
@@ -122,15 +122,17 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout }) => {
         };
 
         fetchUserData();
-    }, [t]);
+    }, [t, updateUser]);
 
     const handleProfileClick = () => {
         navigate('/profile');
     };
+
     const toggleLanguage = () => {
         const newLang = i18n.language === 'en' ? 'fr' : 'en';
         i18n.changeLanguage(newLang);
     };
+
     return (
         <Nav>
             <TitleLink to="/">{t('appTitle')}</TitleLink>

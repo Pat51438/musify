@@ -8,7 +8,7 @@ import { useForm } from '../hooks/useForm';
 import FormInput from '../components/FormInput';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
-
+import { useUser } from '../components/UserContext';
 const ProfileContainer = styled.div`
     max-width: 600px;
     margin: 0 auto;
@@ -78,6 +78,7 @@ const Profile: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const { updateUser } = useUser();
 
     const initialState: FormValues = {
         name: '',
@@ -146,6 +147,15 @@ const Profile: React.FC = () => {
         }
     }, [user]);
 
+    useEffect(() => {
+        if (isEditing && user) {
+            resetForm({
+                name: user.name || '',
+                username: user.username || '',
+                photo: user.photo || '',
+            });
+        }
+    }, [isEditing, user]);
     const getPhotoUrl = async (key: string) => {
         try {
             const result = await getUrl({ key });
@@ -194,12 +204,14 @@ const Profile: React.FC = () => {
             if (user) {
                 const updatedUser = await DataStore.save(
                     User.copyOf(user, updated => {
-                        updated.name = values.name;
-                        updated.username = values.username;
-                        updated.photo = photoKey;
+                        if (values.name !== user.name) updated.name = values.name;
+                        if (values.username !== user.username) updated.username = values.username;
+                        if (photoKey !== user.photo) updated.photo = photoKey;
                     })
                 );
                 setUser(updatedUser);
+                const newPhotoUrl = photoKey ? await getUrl({ key: photoKey }) : null;
+                updateUser(updatedUser.name, newPhotoUrl?.url.toString() || null);
             } else if (userId) {
                 const newUser = await DataStore.save(
                     new User({
@@ -218,6 +230,10 @@ const Profile: React.FC = () => {
 
                 setUser(newUser);
                 setUserProfile(newUserProfile);
+
+                // Mise à jour du contexte utilisateur
+                const newPhotoUrl = photoKey ? await getUrl({ key: photoKey }) : null;
+                updateUser(newUser.name, newPhotoUrl?.url.toString() || null);
             }
 
             alert(t('profileSaveSuccess'));
@@ -231,6 +247,7 @@ const Profile: React.FC = () => {
             alert(t('profileSaveErrorMessage'));
         }
     };
+
 
     const handleDelete = async () => {
         if (userProfile && user) {
