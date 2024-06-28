@@ -7,6 +7,7 @@ import { DataStore } from '@aws-amplify/datastore';
 import { User } from '../models';
 import { useTranslation } from 'react-i18next';
 import { useUser } from './UserContext';
+
 interface NavigationBarProps {
     onLogout?: () => void;
 }
@@ -70,6 +71,7 @@ const Username = styled.span`
     color: white;
     font-weight: bold;
 `;
+
 const LanguageButton = styled(Button)`
     background-color: #21a1f1;
     &:hover {
@@ -80,7 +82,7 @@ const LanguageButton = styled(Button)`
 const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout }) => {
     const navigate = useNavigate();
     const { t, i18n } = useTranslation();
-    const { fullname, photoUrl, updateUser } = useUser();
+    const { fullname, photoUrl, updateUser, clearUser } = useUser();
     const [photoLoading, setPhotoLoading] = useState(false);
     const [photoError, setPhotoError] = useState<string | null>(null);
 
@@ -99,11 +101,8 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout }) => {
                         setPhotoLoading(true);
                         setPhotoError(null);
                         try {
-                            console.log(t('logPhotoKeyAttempt'), user.photo);
                             const result = await getUrl({ key: user.photo });
-                            console.log(t('logGetUrlResult'), result);
                             if (result && result.url) {
-                                console.log(t('logUrlObtained'), result.url.toString());
                                 updateUser(user.name || authUsername, result.url.toString());
                             } else {
                                 throw new Error(t('errorInvalidUrl'));
@@ -144,7 +143,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ onLogout }) => {
                 ) : photoUrl ? (
                     <ProfilePic src={photoUrl} alt={t('profileAlt')} />
                 ) : null}
-                { <Username>{fullname}</Username>}
+                {fullname && <Username>{fullname}</Username>}
                 <ButtonGroup>
                     <Button onClick={handleProfileClick}>{t('profile')}</Button>
                     <Button onClick={onLogout}>{t('logout')}</Button>

@@ -9,6 +9,8 @@ import FormInput from '../components/FormInput';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { useUser } from '../components/UserContext';
+
+
 const ProfileContainer = styled.div`
     max-width: 600px;
     margin: 0 auto;
@@ -78,7 +80,7 @@ const Profile: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const { updateUser } = useUser();
+    const { updateUser, clearUser  } = useUser();
 
     const initialState: FormValues = {
         name: '',
@@ -274,13 +276,14 @@ const Profile: React.FC = () => {
         if (!userProfile && !user) {
             console.log("Aucun profil ou utilisateur à supprimer");
         }
-        // Réinitialisation des états
+        // Réinitialisation des états et du contexte utilisateur
         alert(t('profileDeleteSuccess'));
         resetForm(initialState);
         setUser(null);
         setUserProfile(null);
         setIsEditing(false);
         setPhotoUrl(null);
+        clearUser();  // Appel de la nouvelle méthode pour réinitialiser l'utilisateur
     };
 
     if (loading) return <div>{t('loading')}</div>;

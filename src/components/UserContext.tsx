@@ -1,24 +1,30 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
-interface UserContextType {
+export interface UserContextType {
     fullname: string | null;
     photoUrl: string | null;
-    updateUser: (newUsername: string | null, newPhotoUrl: string | null) => void;
+    updateUser: (newFullname: string | null, newPhotoUrl: string | null) => void;
+    clearUser: () => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [fullname, setfullname] = useState<string | null>(null);
+    const [fullname, setFullname] = useState<string | null>(null);
     const [photoUrl, setPhotoUrl] = useState<string | null>(null);
 
-    const updateUser = (newUsername: string | null, newPhotoUrl: string | null) => {
-        setfullname(newUsername);
+    const updateUser = (newFullname: string | null, newPhotoUrl: string | null) => {
+        setFullname(newFullname);
         setPhotoUrl(newPhotoUrl);
     };
 
+    const clearUser = () => {
+        setFullname(null);
+        setPhotoUrl(null);
+    };
+
     return (
-        <UserContext.Provider value={{ fullname, photoUrl, updateUser }}>
+        <UserContext.Provider value={{ fullname, photoUrl, updateUser, clearUser }}>
             {children}
         </UserContext.Provider>
     );
